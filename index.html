@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portafolio </title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Escritorio -->
+    <div class="desktop" id="desktop">
+        <!-- Header móvil (solo visible en móvil) -->
+        <div class="mobile-header">
+            <div class="mobile-time" id="mobileTime">
+                <div class="time">12:00</div>
+                <div class="date">01/01/2024</div>
+            </div>
+            <div class="mobile-status">
+                <div class="status-icon signal">
+                    <i class="fas fa-signal"></i>
+                </div>
+                <div class="status-icon wifi">
+                    <i class="fas fa-wifi"></i>
+                </div>
+                <div class="status-icon battery">
+                    <i class="fas fa-battery-three-quarters"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Apps principales móviles (solo visible en móvil) -->
+        <div class="mobile-apps-container">
+            <div class="mobile-portfolio-apps">
+                <div class="mobile-app" data-window="projects">
+                    <i class="fas fa-folder"></i>
+                    <span>Proyectos</span>
+                </div>
+                <div class="mobile-app" data-window="cv">
+                    <i class="fas fa-file-pdf"></i>
+                    <span>CV</span>
+                </div>
+                <div class="mobile-app" data-window="about">
+                    <i class="fas fa-user"></i>
+                    <span>Sobre mí</span>
+                </div>
+                <div class="mobile-app" data-window="skills">
+                    <i class="fas fa-tools"></i>
+                    <span>Skills</span>
+                </div>
+                <div class="mobile-app" data-window="contact">
+                    <i class="fas fa-envelope"></i>
+                    <span>Contacto</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Apps del sistema móviles (solo visible en móvil) -->
+        <div class="mobile-system-apps">
+            <div class="mobile-system-app messages">
+                <i class="fas fa-comments"></i>
+            </div>
+            <div class="mobile-system-app google">
+                <i class="fab fa-google"></i>
+            </div>
+            <div class="mobile-system-app phone">
+                <i class="fas fa-phone"></i>
+            </div>
+        </div>
+
+        <!-- Panel deslizable móvil (solo visible en móvil) -->
+        <div class="mobile-panel" id="mobilePanel">
+            <div class="mobile-panel-handle">
+                <i class="fas fa-chevron-up"></i>
+            </div>
+            <div class="mobile-panel-content">
+                <div class="mobile-controls">
+                    <button class="mobile-control-btn" id="mobileLanguageBtn">
+                        <i class="fas fa-globe"></i>
+                        <span>Idioma</span>
+                    </button>
+                    <button class="mobile-control-btn" id="mobileThemeBtn">
+                        <i class="fas fa-moon"></i>
+                        <span>Tema</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Iconos del escritorio (solo visible en desktop) -->
+        <div class="desktop-icons">
+            <div class="desktop-icon" data-window="projects">
+                <i class="fas fa-folder"></i>
+                <span>Proyectos</span>
+            </div>
+            <div class="desktop-icon" data-window="cv">
+                <i class="fas fa-file-pdf"></i>
+                <span>CV - </span>
+            </div>
+            <div class="desktop-icon" data-window="about">
+                <i class="fas fa-user"></i>
+                <span>Sobre mí</span>
+            </div>
+            <div class="desktop-icon" data-window="skills">
+                <i class="fas fa-tools"></i>
+                <span>Skills</span>
+            </div>
+            <div class="desktop-icon" data-window="contact">
+                <i class="fas fa-envelope"></i>
+                <span>Contacto</span>
+            </div>
+        </div>
+
+        <!-- Ventanas flotantes -->
+        <div class="window" id="projects-window" style="display: none;">
+            <div class="window-header">
+                <div class="window-title">
+                    <i class="fas fa-folder"></i>
+                    Proyectos
+                </div>
+                <div class="window-controls">
+                    <button class="minimize-btn"><i class="fas fa-minus"></i></button>
+                    <button class="maximize-btn"><i class="fas fa-expand"></i></button>
+                    <button class="close-btn"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+            <div class="window-content">
+                <div class="projects-container">
+                    <div class="projects-section">
+                        <h3><i class="fas fa-code"></i> Frontend</h3>
+                        <div class="projects-grid">
+                            <div class="project-card">
+                                <div class="project-image">
+                                    <i class="fas fa-globe"></i>
+                                </div>
+                                <h4>Portafolio Web</h4>
+                                <p>Portafolio personal con diseño tipo escritorio Windows</p>
+                                <div class="project-tech">
+                                    <span>HTML</span>
+                                    <span>CSS</span>
+                                    <span>JavaScript</span>
+                                </div>
+                                <div class="project-links">
+                                    <a href="#" class="btn-code"><i class="fab fa-github"></i> Código</a>
+                                    <a href="#" class="btn-demo"><i class="fas fa-external-link-alt"></i> Demo</a>
+                                </div>
+                            </div>
+                            <div class="project-card">
+                                <div class="project-image">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </div>
+                                <h4>E-commerce</h4>
+                                <p>Tienda online con carrito de compras y gestión de productos</p>
+                                <div class="project-tech">
+                                    <span>React</span>
+                                    <span>Node.js</span>
+                                    <span>MongoDB</span>
+                                </div>
+                                <div class="project-links">
+                                    <a href="#" class="btn-code"><i class="fab fa-github"></i> Código</a>
+                                    <a href="#" class="btn-demo"><i class="fas fa-external-link-alt"></i> Demo</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="projects-section">
+                        <h3><i class="fas fa-server"></i> Backend</h3>
+                        <div class="projects-grid">
+                            <div class="project-card">
+                                <div class="project-image">
+                                    <i class="fas fa-database"></i>
+                                </div>
+                                <h4>API REST</h4>
+                                <p>API para gestión de usuarios y autenticación</p>
+                                <div class="project-tech">
+                                    <span>Java</span>
+                                    <span>Spring Boot</span>
+                                    <span>MySQL</span>
+                                </div>
+                                <div class="project-links">
+                                    <a href="#" class="btn-code"><i class="fab fa-github"></i> Código</a>
+                                    <a href="#" class="btn-demo"><i class="fas fa-external-link-alt"></i> Demo</a>
+                                </div>
+                            </div>
+                            <div class="project-card">
+                                <div class="project-image">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <h4>Sistema de Reportes</h4>
+                                <p>Aplicación de análisis de datos y generación de reportes</p>
+                                <div class="project-tech">
+                                    <span>C#</span>
+                                    <span>.NET</span>
+                                    <span>SQL Server</span>
+                                </div>
+                                <div class="project-links">
+                                    <a href="#" class="btn-code"><i class="fab fa-github"></i> Código</a>
+                                    <a href="#" class="btn-demo"><i class="fas fa-external-link-alt"></i> Demo</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="window" id="cv-window" style="display: none;">
+            <div class="window-header">
+                <div class="window-title">
+                    <i class="fas fa-file-pdf"></i>
+                    CV - Curriculum Vitae
+                </div>
+                <div class="window-controls">
+                    <button class="minimize-btn"><i class="fas fa-minus"></i></button>
+                    <button class="maximize-btn"><i class="fas fa-expand"></i></button>
+                    <button class="close-btn"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+            <div class="window-content">
+                <div class="cv-container">
+                    <div class="cv-controls">
+                        <button class="cv-btn" id="viewPdfBtn">
+                            <i class="fas fa-eye"></i>
+                            Ver PDF
+                        </button>
+                        <a href="Curriculum.pdf" download class="cv-btn download-btn">
+                            <i class="fas fa-download"></i>
+                            Descargar PDF
+                        </a>
+                        <a href="Curriculum.pdf" target="_blank" class="cv-btn">
+                            <i class="fas fa-external-link-alt"></i>
+                            Abrir en nueva pestaña
+                        </a>
+                    </div>
+                    <div class="cv-preview" id="cvPreview">
+                        <div class="cv-header">
+                            <h2>Diego [Tu Apellido]</h2>
+                            <p>Desarrollador Full Stack</p>
+                        </div>
+                        <div class="cv-section">
+                            <h3>Experiencia</h3>
+                            <div class="cv-item">
+                                <h4>Desarrollador Full Stack - Empresa XYZ</h4>
+                                <p class="cv-date">2023 - Presente</p>
+                                <p>Desarrollo de aplicaciones web con Java, Spring Boot y React</p>
+                            </div>
+                            <div class="cv-item">
+                                <h4>Prácticas FCT - Empresa ABC</h4>
+                                <p class="cv-date">2022 - 2023</p>
+                                <p>Desarrollo de aplicaciones de escritorio con C# y .NET</p>
+                            </div>
+                        </div>
+                        <div class="cv-section">
+                            <h3>Formación</h3>
+                            <div class="cv-item">
+                                <h4>Grado Superior en Desarrollo de Aplicaciones Multiplataforma</h4>
+                                <p class="cv-date">2020 - 2023</p>
+                            </div>
+                        </div>
+                        <div class="cv-note">
+                            <p><i class="fas fa-info-circle"></i> Haz clic en "Ver PDF" para ver el currículum completo</p>
+                        </div>
+                    </div>
+                    <div class="cv-pdf-viewer" id="cvPdfViewer" style="display: none;">
+                        <div class="pdf-controls">
+                            <button class="pdf-btn" id="backToPreviewBtn">
+                                <i class="fas fa-arrow-left"></i>
+                                Volver a vista previa
+                            </button>
+                        </div>
+                        <iframe src="Curriculum.pdf" width="100%" height="600px" frameborder="0"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="window" id="about-window" style="display: none;">
+            <div class="window-header">
+                <div class="window-title">
+                    <i class="fas fa-user"></i>
+                    Sobre mí
+                </div>
+                <div class="window-controls">
+                    <button class="minimize-btn"><i class="fas fa-minus"></i></button>
+                    <button class="maximize-btn"><i class="fas fa-expand"></i></button>
+                    <button class="close-btn"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+            <div class="window-content">
+                <div class="about-container">
+                    <div class="about-header">
+                        <div class="about-photo">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="about-info">
+                            <h2>Ainhoa Marey</h2>
+                            <p>Desarrollador Full Stack apasionado por crear soluciones innovadoras</p>
+                        </div>
+                    </div>
+                    <div class="about-description">
+                        <p>Soy un desarrollador con experiencia en tecnologías frontend y backend. Me especializo en Java, C#, JavaScript y frameworks modernos. Me gusta trabajar en proyectos desafiantes y aprender nuevas tecnologías.</p>
+                    </div>
+                    <div class="timeline">
+                        <h3>Mi Timeline</h3>
+                        <div class="timeline-item">
+                            <div class="timeline-date">2023</div>
+                            <div class="timeline-content">
+                                <h4>Desarrollador Full Stack</h4>
+                                <p>Inicio en empresa XYZ desarrollando aplicaciones web</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-date">2022-2023</div>
+                            <div class="timeline-content">
+                                <h4>Prácticas FCT</h4>
+                                <p>Desarrollo de aplicaciones de escritorio con C#</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-date">2020-2023</div>
+                            <div class="timeline-content">
+                                <h4>Grado Superior DAM</h4>
+                                <p>Formación en desarrollo de aplicaciones multiplataforma</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="window" id="skills-window" style="display: none;">
+            <div class="window-header">
+                <div class="window-title">
+                    <i class="fas fa-tools"></i>
+                    Skills
+                </div>
+                <div class="window-controls">
+                    <button class="minimize-btn"><i class="fas fa-minus"></i></button>
+                    <button class="maximize-btn"><i class="fas fa-expand"></i></button>
+                    <button class="close-btn"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+            <div class="window-content">
+                <div class="skills-container">
+                    <div class="skills-section">
+                        <h3><i class="fas fa-code"></i> Frontend</h3>
+                        <div class="skills-grid">
+                            <div class="skill-item">
+                                <i class="fab fa-html5"></i>
+                                <span>HTML5</span>
+                                <div class="skill-level" data-level="95"></div>
+                            </div>
+                            <div class="skill-item">
+                                <i class="fab fa-css3-alt"></i>
+                                <span>CSS3</span>
+                                <div class="skill-level" data-level="90"></div>
+                            </div>
+                            <div class="skill-item">
+                                <i class="fab fa-js-square"></i>
+                                <span>JavaScript</span>
+                                <div class="skill-level" data-level="85"></div>
+                            </div>
+                            <div class="skill-item">
+                                <i class="fab fa-react"></i>
+                                <span>React</span>
+                                <div class="skill-level" data-level="80"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="skills-section">
+                        <h3><i class="fas fa-server"></i> Backend</h3>
+                        <div class="skills-grid">
+                            <div class="skill-item">
+                                <i class="fab fa-java"></i>
+                                <span>Java</span>
+                                <div class="skill-level" data-level="90"></div>
+                            </div>
+                            <div class="skill-item">
+                                <i class="fab fa-microsoft"></i>
+                                <span>C#</span>
+                                <div class="skill-level" data-level="85"></div>
+                            </div>
+                            <div class="skill-item">
+                                <i class="fas fa-leaf"></i>
+                                <span>Spring Boot</span>
+                                <div class="skill-level" data-level="85"></div>
+                            </div>
+                            <div class="skill-item">
+                                <i class="fab fa-microsoft"></i>
+                                <span>.NET</span>
+                                <div class="skill-level" data-level="80"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="skills-section">
+                        <h3><i class="fas fa-wrench"></i> Herramientas</h3>
+                        <div class="skills-grid">
+                            <div class="skill-item">
+                                <i class="fab fa-git-alt"></i>
+                                <span>Git</span>
+                                <div class="skill-level" data-level="90"></div>
+                            </div>
+                            <div class="skill-item">
+                                <i class="fas fa-code"></i>
+                                <span>VSCode</span>
+                                <div class="skill-level" data-level="95"></div>
+                            </div>
+                            <div class="skill-item">
+                                <i class="fab fa-figma"></i>
+                                <span>Figma</span>
+                                <div class="skill-level" data-level="70"></div>
+                            </div>
+                            <div class="skill-item">
+                                <i class="fas fa-database"></i>
+                                <span>SQL Server</span>
+                                <div class="skill-level" data-level="85"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="window" id="contact-window" style="display: none;">
+            <div class="window-header">
+                <div class="window-title">
+                    <i class="fas fa-envelope"></i>
+                    Contacto
+                </div>
+                <div class="window-controls">
+                    <button class="minimize-btn"><i class="fas fa-minus"></i></button>
+                    <button class="maximize-btn"><i class="fas fa-expand"></i></button>
+                    <button class="close-btn"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+            <div class="window-content">
+                <div class="contact-container">
+                    <div class="contact-form">
+                        <h3>Envíame un mensaje</h3>
+                        <form id="contactForm">
+                            <div class="form-group">
+                                <label for="name">Nombre:</label>
+                                <input type="text" id="name" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email:</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="message">Mensaje:</label>
+                                <textarea id="message" name="message" rows="5" required></textarea>
+                            </div>
+                            <button type="submit" class="btn-send">
+                                <i class="fas fa-paper-plane"></i>
+                                Enviar Mensaje
+                            </button>
+                        </form>
+                    </div>
+                    <div class="contact-social">
+                        <h3>Redes Sociales</h3>
+                        <div class="social-links">
+                            <a href="#" class="social-link">
+                                <i class="fab fa-linkedin"></i>
+                                <span>LinkedIn</span>
+                            </a>
+                            <a href="#" class="social-link">
+                                <i class="fab fa-github"></i>
+                                <span>GitHub</span>
+                            </a>
+                            <a href="mailto:tu@email.com" class="social-link">
+                                <i class="fas fa-envelope"></i>
+                                <span>Email</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Barra de tareas Windows 11 -->
+    <div class="taskbar">
+        <div class="taskbar-left">
+            <button class="start-button" id="startButton" aria-label="Menú inicio">
+                <img src="Windows-Logo.png" alt="Windows" class="windows-logo" style="width:22px;height:22px;" />
+            </button>
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Buscar apps o archivos..." id="searchInput">
+            </div>
+            <div class="taskbar-apps" id="taskbarApps">
+                <!-- Apps abiertas se añadirán aquí dinámicamente -->
+            </div>
+        </div>
+        <div class="taskbar-right">
+            <div class="taskbar-icons">
+                <button class="language-toggle" id="languageToggle">
+                    <i class="fas fa-globe"></i>
+                    <span>ES</span>
+                </button>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="system-icons">
+                    <div class="system-icon">
+                        <i class="fas fa-wifi"></i>
+                    </div>
+                    <div class="system-icon">
+                        <i class="fas fa-volume-up"></i>
+                    </div>
+                    <div class="system-icon">
+                        <i class="fas fa-battery-three-quarters"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="taskbar-time" id="taskbarTime">
+                <div class="time">12:00</div>
+                <div class="date">01/01/2024</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menú inicio Windows 11 -->
+    <div class="start-menu" id="startMenu" style="display: none;">
+        <div class="start-menu-header">
+            <h3>Portafolio de Diego</h3>
+            <p>Tu sistema operativo personal</p>
+        </div>
+        <div class="start-menu-search">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Buscar en el portafolio...">
+        </div>
+        <div class="start-menu-apps">
+            <div class="start-app" data-window="projects">
+                <i class="fas fa-folder"></i>
+                <span>Proyectos</span>
+            </div>
+            <div class="start-app" data-window="cv">
+                <i class="fas fa-file-pdf"></i>
+                <span>CV</span>
+            </div>
+            <div class="start-app" data-window="about">
+                <i class="fas fa-user"></i>
+                <span>Sobre mí</span>
+            </div>
+            <div class="start-app" data-window="skills">
+                <i class="fas fa-tools"></i>
+                <span>Skills</span>
+            </div>
+            <div class="start-app" data-window="contact">
+                <i class="fas fa-envelope"></i>
+                <span>Contacto</span>
+            </div>
+        </div>
+        <div class="start-menu-footer">
+            <div class="user-profile">
+                <i class="fas fa-user-circle"></i>
+                <span>Diego</span>
+            </div>
+            <button class="power-button">
+                <i class="fas fa-power-off"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Selector de idioma -->
+    <div class="language-menu" id="languageMenu" style="display: none;">
+        <div class="language-option" data-lang="es">
+            <i class="fas fa-flag"></i>
+            <span>Español</span>
+        </div>
+        <div class="language-option" data-lang="en">
+            <i class="fas fa-flag"></i>
+            <span>English</span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
