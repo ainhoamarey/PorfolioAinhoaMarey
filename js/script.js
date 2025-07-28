@@ -297,6 +297,11 @@ function openWindow(windowType) {
     if (windowType === 'cv') {
         setupCVFunctionalityForWindow(newWindow);
     }
+    
+    // Configurar funcionalidad específica de Skills
+    if (windowType === 'skills') {
+        setupSkillsNavigationForWindow(newWindow);
+    }
 }
 
 function setupWindowEvents(window, windowType) {
@@ -1031,4 +1036,70 @@ function setupCVFunctionalityForWindow(window) {
             cvPreview.style.display = 'block';
         });
     }
+} 
+
+// Configurar funcionalidad de Skills para una ventana específica
+function setupSkillsNavigationForWindow(window) {
+    const categories = window.querySelectorAll('.skills-category');
+    const panels = window.querySelectorAll('.skills-panel');
+
+    console.log('Configurando navegación de Skills para ventana:', categories.length, 'categorías encontradas');
+
+    categories.forEach(category => {
+        category.addEventListener('click', () => {
+            const targetCategory = category.getAttribute('data-category');
+            console.log('Categoría seleccionada:', targetCategory);
+            
+            // Remover clase active de todas las categorías
+            categories.forEach(cat => cat.classList.remove('active'));
+            
+            // Agregar clase active a la categoría seleccionada
+            category.classList.add('active');
+            
+            // Ocultar todos los paneles
+            panels.forEach(panel => panel.classList.remove('active'));
+            
+            // Mostrar el panel correspondiente
+            const targetPanel = window.querySelector(`#${targetCategory}-panel`);
+            if (targetPanel) {
+                targetPanel.classList.add('active');
+                console.log('Panel activado:', targetPanel.id);
+            } else {
+                console.error('Panel no encontrado:', `${targetCategory}-panel`);
+            }
+        });
+    });
+}
+
+// Funcionalidad para Skills tipo Configuración Windows 11
+function setupSkillsNavigation() {
+    const categories = document.querySelectorAll('.skills-category');
+    const panels = document.querySelectorAll('.skills-panel');
+
+    console.log('Configurando navegación de Skills:', categories.length, 'categorías encontradas');
+
+    categories.forEach(category => {
+        category.addEventListener('click', () => {
+            const targetCategory = category.getAttribute('data-category');
+            console.log('Categoría seleccionada:', targetCategory);
+            
+            // Remover clase active de todas las categorías
+            categories.forEach(cat => cat.classList.remove('active'));
+            
+            // Agregar clase active a la categoría seleccionada
+            category.classList.add('active');
+            
+            // Ocultar todos los paneles
+            panels.forEach(panel => panel.classList.remove('active'));
+            
+            // Mostrar el panel correspondiente
+            const targetPanel = document.getElementById(`${targetCategory}-panel`);
+            if (targetPanel) {
+                targetPanel.classList.add('active');
+                console.log('Panel activado:', targetPanel.id);
+            } else {
+                console.error('Panel no encontrado:', `${targetCategory}-panel`);
+            }
+        });
+    });
 } 
