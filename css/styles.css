@@ -53,7 +53,7 @@ body {
 .desktop {
     width: 100vw;
     height: calc(100vh - 40px);
-    background: url('fondo en claro.png') center center;
+    background: url('assets/images/fondo en claro.png') center center;
     background-size: cover;
     background-position: center;
     position: relative;
@@ -63,7 +63,7 @@ body {
 
 /* Fondo oscuro para el tema dark */
 [data-theme="dark"] .desktop {
-    background: url('fondo en oscuro.png') center center;
+    background: url('assets/images/fondo en oscuro.png') center center;
     background-size: cover;
     background-repeat: no-repeat;
 }
@@ -1198,7 +1198,7 @@ body {
 /* EXPERIENCIA MÓVIL */
 @media screen and (max-width: 768px) {
     body {
-        background: url('fondo en claro.png') center center;
+        background: url('assets/images/fondo en claro.png') center center;
         background-size: cover;
         background-repeat: no-repeat;
         overflow: hidden;
@@ -1206,14 +1206,14 @@ body {
     
     /* Fondo oscuro para body en móvil */
     [data-theme="dark"] body {
-        background: url('fondo en oscuro.png') center center;
+        background: url('assets/images/fondo en oscuro.png') center center;
         background-size: cover;
         background-repeat: no-repeat;
     }
 
     .desktop {
         height: 100vh;
-        background: url('fondo en claro.png') center center;
+        background: url('assets/images/fondo en claro.png') center center;
         background-size: cover;
         background-repeat: no-repeat;
         display: flex;
@@ -1224,7 +1224,7 @@ body {
     
     /* Fondo oscuro para móvil en tema dark */
     [data-theme="dark"] .desktop {
-        background: url('fondo en oscuro.png') center center;
+        background: url('assets/images/fondo en oscuro.png') center center;
         background-size: cover;
         background-repeat: no-repeat;
     }
