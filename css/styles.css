@@ -59,14 +59,15 @@ body {
     position: relative;
     overflow: hidden;
     transition: background 0.3s ease;
-}
-
-/* Fondo oscuro para el tema dark */
-[data-theme="dark"] .desktop {
+  }
+  
+  /* Fondo oscuro para el tema dark */
+  [data-theme="dark"] .desktop {
     background: url('../assets/images/fondoEnOscuro.png') center center;
     background-size: cover;
     background-repeat: no-repeat;
-}
+  }
+  
 
 /* Iconos del escritorio */
 .desktop-icons {
