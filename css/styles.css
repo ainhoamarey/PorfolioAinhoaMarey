@@ -96,6 +96,12 @@ body {
     backdrop-filter: blur(10px);
 }
 
+.desktop-icon:active {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(0.95);
+    transition: all 0.1s ease;
+}
+
 .desktop-icon i {
     font-size: 32px;
     color: white;
@@ -119,6 +125,10 @@ body {
     box-shadow: var(--window-shadow);
     min-width: 400px;
     min-height: 300px;
+    max-width: 90vw;
+    max-height: 80vh;
+    width: 800px;
+    height: 600px;
     resize: both;
     overflow: hidden;
     border: 1px solid var(--border-color);
@@ -355,10 +365,16 @@ body {
     align-items: center;
     justify-content: center;
     transition: background 0.2s ease;
+    color: var(--text-primary);
 }
 
 .theme-toggle:hover {
     background: var(--bg-tertiary);
+}
+
+/* Icono blanco en modo oscuro */
+[data-theme="dark"] .theme-toggle {
+    color: #ffffff;
 }
 
 .system-icons {
@@ -1060,6 +1076,17 @@ body {
     }
 }
 
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .window {
     animation: fadeIn 0.3s ease;
 }
@@ -1260,6 +1287,12 @@ body {
     .mobile-app:hover {
         background: rgba(255, 255, 255, 0.2);
         transform: scale(1.05);
+    }
+
+    .mobile-app:active {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(0.95);
+        transition: all 0.1s ease;
     }
 
     .mobile-app i {
@@ -1510,18 +1543,17 @@ body {
 }
 
 .cv-btn:hover {
-    background: var(--accent-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 123, 255, 0.4);
 }
 
 .cv-btn.download-btn {
-    background: #28a745;
+    background: #0078d4;
 }
 
 .cv-btn.download-btn:hover {
-    background: #218838;
-    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 120, 212, 0.4);
 }
 
 .cv-btn i {
@@ -1772,5 +1804,192 @@ body {
     
     .skills-grid {
         grid-template-columns: 1fr;
+    }
+}
+
+/* Estilos para el formulario de contacto */
+.contact-container {
+    display: flex;
+    height: 100%;
+    min-height: 500px;
+}
+
+/* Columna izquierda: Formulario estilo Outlook */
+.contact-form-column {
+    flex: 1;
+    background: #fff3cd;
+    padding: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.contact-form {
+    width: 100%;
+    max-width: 400px;
+}
+
+.contact-form h2 {
+    color: #000;
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 30px;
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 15px 20px;
+    border: 1px solid #d1d1d1;
+    border-radius: 0;
+    background: #fff;
+    color: #000;
+    font-size: 16px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #0078d4;
+    box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.2);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #666;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.btn-send {
+    width: 100%;
+    padding: 15px 24px;
+    background: #000;
+    color: #fff;
+    border: none;
+    border-radius: 0;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-send:hover {
+    background: #333;
+    transform: translateY(-1px);
+}
+
+/* Columna derecha: Redes sociales */
+.contact-social-column {
+    flex: 1;
+    background: #fff;
+    padding: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Líneas curvas decorativas */
+.contact-social-column::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 30%, #f0f0f0 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, #f0f0f0 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, #f0f0f0 0%, transparent 50%);
+    opacity: 0.6;
+    z-index: 1;
+}
+
+.social-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 300px;
+}
+
+.social-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 25px 20px;
+    color: #000;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    background: transparent;
+}
+
+.social-item:hover {
+    background: rgba(0, 0, 0, 0.05);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.social-item i {
+    font-size: 32px;
+    color: #000;
+    transition: all 0.3s ease;
+}
+
+.social-item:hover i {
+    transform: scale(1.1);
+}
+
+.social-item span {
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 1px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
+}
+
+/* Responsive para móvil */
+@media screen and (max-width: 768px) {
+    .contact-container {
+        flex-direction: column;
+        min-height: auto;
+    }
+    
+    .contact-form-column,
+    .contact-social-column {
+        padding: 30px 20px;
+    }
+    
+    .social-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .contact-form h2 {
+        font-size: 24px;
+        margin-bottom: 20px;
     }
 } 

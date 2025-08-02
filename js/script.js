@@ -99,7 +99,7 @@ const translations = {
         message: "Mensaje:",
         sendButton: "Enviar Mensaje",
         successMessage: "¡Mensaje enviado con éxito!",
-        portfolioTitle: "Portafolio de Diego",
+        portfolioTitle: "Portafolio de Ainhoa",
         portfolioSubtitle: "Tu sistema operativo personal",
         socialNetworks: "Redes Sociales",
         portfolioApps: "Apps del Portafolio",
@@ -135,7 +135,7 @@ const translations = {
         message: "Message:",
         sendButton: "Send Message",
         successMessage: "Message sent successfully!",
-        portfolioTitle: "Diego's Portfolio",
+        portfolioTitle: "Porfolio Ainhoa",
         portfolioSubtitle: "Your personal operating system",
         socialNetworks: "Social Networks",
         portfolioApps: "Portfolio Apps",
@@ -163,17 +163,17 @@ function initializeApp() {
         setupDesktopExperience();
     }
 
-    // Event listeners para iconos del escritorio
+    // Event listeners para iconos del escritorio (doble clic)
     document.querySelectorAll('.desktop-icon').forEach(icon => {
-        icon.addEventListener('click', function() {
+        icon.addEventListener('dblclick', function() {
             const windowType = this.getAttribute('data-window');
             openWindow(windowType);
         });
     });
 
-    // Event listeners para menú inicio
+    // Event listeners para menú inicio (doble clic)
     document.querySelectorAll('.start-app').forEach(app => {
-        app.addEventListener('click', function() {
+        app.addEventListener('dblclick', function() {
             const windowType = this.getAttribute('data-window');
             openWindow(windowType);
             toggleStartMenu();
@@ -201,6 +201,7 @@ function initializeApp() {
     // Barra de búsqueda
     if (searchInput) {
         searchInput.addEventListener('input', handleSearch);
+        searchInput.addEventListener('keypress', handleSearchKeyPress);
         searchInput.addEventListener('focus', function() {
             this.parentElement.style.background = 'var(--bg-secondary)';
             this.parentElement.style.borderColor = 'var(--accent-color)';
@@ -267,10 +268,17 @@ function openWindow(windowType) {
     const uniqueId = `${windowType}-${++windowCounter}`;
     newWindow.id = uniqueId;
     
-    // Posición inicial
-    const offset = activeWindows.length * 30;
-    newWindow.style.left = `${100 + offset}px`;
-    newWindow.style.top = `${100 + offset}px`;
+    // Posición inicial centrada
+    const windowWidth = 800; // Ancho aproximado de la ventana
+    const windowHeight = 600; // Alto aproximado de la ventana
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    
+    const left = Math.max(0, (screenWidth - windowWidth) / 2);
+    const top = Math.max(0, (screenHeight - windowHeight) / 2);
+    
+    newWindow.style.left = `${left}px`;
+    newWindow.style.top = `${top}px`;
     newWindow.style.display = 'block';
     newWindow.style.zIndex = 1000 + activeWindows.length;
     
@@ -607,23 +615,484 @@ function changeLanguage(lang) {
     localStorage.setItem('language', lang);
 }
 
+let searchTimeout;
+
 function handleSearch(e) {
-    const query = e.target.value.toLowerCase();
+    const query = e.target.value.toLowerCase().trim();
     
-    if (query.length < 2) return;
+    // Limpiar timeout anterior
+    if (searchTimeout) {
+        clearTimeout(searchTimeout);
+    }
     
-    // Buscar en ventanas abiertas
-    const matchingWindows = activeWindows.filter(window => {
-        const windowTitle = window.element.querySelector('.window-title').textContent.toLowerCase();
-        return windowTitle.includes(query);
+    if (query.length < 2) {
+        // Limpiar mensaje de búsqueda si existe
+        clearSearchMessage();
+        clearSuggestions();
+        return;
+    }
+    
+    // Definir los apartados disponibles y sus términos de búsqueda
+    const searchableItems = [
+        { 
+            type: 'projects', 
+            keywords: ['proyectos', 'proyecto', 'folder', 'carpeta', 'código', 'code', 'frontend', 'backend', 'api', 'web', 'app', 'aplicación', 'aplicacion', 'trabajos'],
+            title: 'Proyectos'
+        },
+        { 
+            type: 'cv', 
+            keywords: ['cv', 'curriculum', 'curriculum vitae', 'pdf', 'descargar', 'download', 'resume', 'vitae', 'currículum'],
+            title: 'CV - Curriculum Vitae'
+        },
+        { 
+            type: 'about', 
+            keywords: ['sobre mí', 'sobre mi', 'about', 'perfil', 'profile', 'usuario', 'user', 'persona', 'información', 'informacion', 'mí', 'mi', 'acerca'],
+            title: 'Sobre mí'
+        },
+        { 
+            type: 'skills', 
+            keywords: ['skills', 'habilidades', 'herramientas', 'tools', 'tecnologías', 'tecnologias', 'lenguajes', 'frameworks', 'java', 'javascript', 'css', 'html', 'tecnologia', 'conocimientos'],
+            title: 'Skills'
+        },
+        { 
+            type: 'contact', 
+            keywords: ['contacto', 'contact', 'mensaje', 'message', 'email', 'correo', 'enviar', 'send', 'formulario', 'form', 'escribir'],
+            title: 'Contacto'
+        }
+    ];
+    
+    // Buscar coincidencias exactas
+    const exactMatches = searchableItems.filter(item => {
+        return item.keywords.some(keyword => keyword === query);
     });
     
-    // Si hay coincidencias, abrir la primera
-    if (matchingWindows.length > 0) {
-        const window = matchingWindows[0].element;
-        window.style.display = 'block';
-        bringToFront(window);
+    // Buscar coincidencias parciales para sugerencias (solo si no hay exactas)
+    let partialMatches = [];
+    if (exactMatches.length === 0) {
+        partialMatches = searchableItems.filter(item => {
+            return item.keywords.some(keyword => keyword.startsWith(query));
+        });
     }
+    
+    // Limpiar mensaje anterior
+    clearSearchMessage();
+    clearSuggestions();
+    
+    if (exactMatches.length > 0) {
+        // Coincidencia exacta - abrir directamente
+        const firstMatch = exactMatches[0];
+        openWindow(firstMatch.type);
+        
+        // Mostrar mensaje de éxito
+        showSearchMessage(`Abriendo: ${firstMatch.title}`, 'success');
+        
+        // Limpiar el campo de búsqueda después de un tiempo
+        setTimeout(() => {
+            e.target.value = '';
+            clearSearchMessage();
+        }, 2000);
+    } else if (partialMatches.length > 0) {
+        // Coincidencias parciales - mostrar sugerencias
+        showSuggestions(partialMatches, query);
+    } else {
+        // No hay coincidencias - mostrar modal de no encontrado
+        showNotFoundModal(query);
+    }
+}
+
+function handleSearchKeyPress(e) {
+    if (e.key === 'Enter') {
+        const query = e.target.value.toLowerCase().trim();
+        if (query.length >= 2) {
+            handleSearch(e);
+        }
+    }
+}
+
+function showSearchMessage(message, type) {
+    // Eliminar mensaje anterior si existe
+    clearSearchMessage();
+    
+    const searchBar = document.querySelector('.search-bar');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `search-message ${type}`;
+    messageDiv.textContent = message;
+    
+    // Crear un contenedor para el mensaje si no existe
+    let messageContainer = document.querySelector('.search-message-container');
+    if (!messageContainer) {
+        messageContainer = document.createElement('div');
+        messageContainer.className = 'search-message-container';
+        messageContainer.style.cssText = `
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            margin-top: 4px;
+        `;
+        searchBar.parentNode.insertBefore(messageContainer, searchBar.nextSibling);
+    }
+    
+    // Aplicar estilos al mensaje
+    messageDiv.style.cssText = `
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 500;
+        animation: slideDown 0.3s ease;
+        text-align: center;
+        ${type === 'success' ? 
+            'background: rgba(40, 167, 69, 0.95); color: white; border: 1px solid rgba(40, 167, 69, 0.3);' : 
+            'background: rgba(220, 53, 69, 0.95); color: white; border: 1px solid rgba(220, 53, 69, 0.3);'
+        }
+    `;
+    
+    messageContainer.appendChild(messageDiv);
+}
+
+function clearSearchMessage() {
+    const messageContainer = document.querySelector('.search-message-container');
+    if (messageContainer) {
+        messageContainer.remove();
+    }
+}
+
+function clearSuggestions() {
+    const suggestionsContainer = document.querySelector('.search-suggestions-container');
+    if (suggestionsContainer) {
+        suggestionsContainer.remove();
+    }
+}
+
+function showSuggestions(matches, query) {
+    // Eliminar sugerencias anteriores si existen
+    clearSuggestions();
+    
+    const searchBar = document.querySelector('.search-bar');
+    const suggestionsContainer = document.createElement('div');
+    suggestionsContainer.className = 'search-suggestions-container';
+    
+    // Crear lista de sugerencias únicas
+    const uniqueSuggestions = [];
+    matches.forEach(match => {
+        match.keywords.forEach(keyword => {
+            if (keyword.startsWith(query) && !uniqueSuggestions.includes(keyword)) {
+                uniqueSuggestions.push(keyword);
+            }
+        });
+    });
+    
+    // Limitar a 5 sugerencias
+    const limitedSuggestions = uniqueSuggestions.slice(0, 5);
+    
+    suggestionsContainer.innerHTML = `
+        <div class="suggestions-list">
+            ${limitedSuggestions.map(suggestion => `
+                <div class="suggestion-item" data-suggestion="${suggestion}">
+                    <i class="fas fa-search"></i>
+                    <span class="suggestion-text">${suggestion}</span>
+                </div>
+            `).join('')}
+        </div>
+    `;
+    
+    // Aplicar estilos al contenedor
+    suggestionsContainer.style.cssText = `
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        margin-top: 4px;
+        background: var(--bg-secondary);
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        border: 1px solid var(--border-color);
+        overflow: hidden;
+        animation: slideDown 0.3s ease;
+    `;
+    
+    const suggestionsList = suggestionsContainer.querySelector('.suggestions-list');
+    suggestionsList.style.cssText = `
+        max-height: 200px;
+        overflow-y: auto;
+    `;
+    
+    // Aplicar estilos a cada sugerencia
+    const suggestionItems = suggestionsContainer.querySelectorAll('.suggestion-item');
+    suggestionItems.forEach((item, index) => {
+        item.style.cssText = `
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid var(--border-color);
+            ${index === suggestionItems.length - 1 ? 'border-bottom: none;' : ''}
+        `;
+        
+        const icon = item.querySelector('i');
+        icon.style.cssText = `
+            color: var(--accent-color);
+            font-size: 14px;
+            width: 16px;
+        `;
+        
+        const text = item.querySelector('.suggestion-text');
+        text.style.cssText = `
+            color: var(--text-primary);
+            font-size: 14px;
+            flex: 1;
+        `;
+        
+        // Efectos hover
+        item.addEventListener('mouseenter', function() {
+            this.style.background = 'var(--bg-tertiary)';
+        });
+        
+        item.addEventListener('mouseleave', function() {
+            this.style.background = 'transparent';
+        });
+        
+        // Clic en sugerencia
+        item.addEventListener('click', function() {
+            const suggestion = this.getAttribute('data-suggestion');
+            const searchInput = document.getElementById('searchInput');
+            searchInput.value = suggestion;
+            searchInput.focus();
+            clearSuggestions();
+            handleSearch({ target: searchInput });
+        });
+    });
+    
+    // Insertar después de la barra de búsqueda
+    searchBar.parentNode.insertBefore(suggestionsContainer, searchBar.nextSibling);
+    
+    // Cerrar sugerencias al hacer clic fuera
+    document.addEventListener('click', function closeSuggestions(e) {
+        if (!suggestionsContainer.contains(e.target) && !searchBar.contains(e.target)) {
+            clearSuggestions();
+            document.removeEventListener('click', closeSuggestions);
+        }
+    });
+    
+    // Navegación con teclado
+    let selectedIndex = -1;
+    document.addEventListener('keydown', function handleKeyNavigation(e) {
+        if (!suggestionsContainer.parentNode) {
+            document.removeEventListener('keydown', handleKeyNavigation);
+            return;
+        }
+        
+        switch(e.key) {
+            case 'ArrowDown':
+                e.preventDefault();
+                selectedIndex = Math.min(selectedIndex + 1, suggestionItems.length - 1);
+                updateSelection();
+                break;
+            case 'ArrowUp':
+                e.preventDefault();
+                selectedIndex = Math.max(selectedIndex - 1, -1);
+                updateSelection();
+                break;
+            case 'Enter':
+                e.preventDefault();
+                if (selectedIndex >= 0) {
+                    suggestionItems[selectedIndex].click();
+                }
+                break;
+            case 'Escape':
+                clearSuggestions();
+                document.removeEventListener('keydown', handleKeyNavigation);
+                break;
+        }
+    });
+    
+    function updateSelection() {
+        suggestionItems.forEach((item, index) => {
+            if (index === selectedIndex) {
+                item.style.background = 'var(--accent-color)';
+                item.querySelector('.suggestion-text').style.color = 'white';
+                item.querySelector('i').style.color = 'white';
+            } else {
+                item.style.background = 'transparent';
+                item.querySelector('.suggestion-text').style.color = 'var(--text-primary)';
+                item.querySelector('i').style.color = 'var(--accent-color)';
+            }
+        });
+    }
+}
+
+function showNotFoundModal(query) {
+    // Eliminar modal anterior si existe
+    const existingModal = document.querySelector('.not-found-modal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // Crear modal
+    const modal = document.createElement('div');
+    modal.className = 'not-found-modal';
+    modal.innerHTML = `
+        <div class="not-found-content">
+            <div class="not-found-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <h3>No se encontró "${query}"</h3>
+            <p>Prueba con alguna de estas opciones:</p>
+            <div class="suggestions">
+                <span class="suggestion">proyectos</span>
+                <span class="suggestion">cv</span>
+                <span class="suggestion">sobre mí</span>
+                <span class="suggestion">skills</span>
+                <span class="suggestion">contacto</span>
+            </div>
+            <button class="close-modal-btn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `;
+    
+    // Aplicar estilos
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        animation: fadeIn 0.3s ease;
+    `;
+    
+    const content = modal.querySelector('.not-found-content');
+    content.style.cssText = `
+        background: var(--bg-secondary);
+        border-radius: 12px;
+        padding: 30px;
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+        position: relative;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--border-color);
+    `;
+    
+    const icon = modal.querySelector('.not-found-icon');
+    icon.style.cssText = `
+        font-size: 48px;
+        color: var(--accent-color);
+        margin-bottom: 20px;
+    `;
+    
+    const title = modal.querySelector('h3');
+    title.style.cssText = `
+        color: var(--text-primary);
+        margin-bottom: 15px;
+        font-size: 18px;
+    `;
+    
+    const description = modal.querySelector('p');
+    description.style.cssText = `
+        color: var(--text-secondary);
+        margin-bottom: 20px;
+        font-size: 14px;
+    `;
+    
+    const suggestions = modal.querySelector('.suggestions');
+    suggestions.style.cssText = `
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+        margin-bottom: 20px;
+    `;
+    
+    const suggestionSpans = modal.querySelectorAll('.suggestion');
+    suggestionSpans.forEach(span => {
+        span.style.cssText = `
+            background: var(--accent-color);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        `;
+        
+        span.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.05)';
+            this.style.background = '#005a9e';
+        });
+        
+        span.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1)';
+            this.style.background = 'var(--accent-color)';
+        });
+        
+        span.addEventListener('click', function() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.value = this.textContent;
+            searchInput.focus();
+            modal.remove();
+            handleSearch({ target: searchInput });
+        });
+    });
+    
+    const closeBtn = modal.querySelector('.close-modal-btn');
+    closeBtn.style.cssText = `
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        cursor: pointer;
+        font-size: 16px;
+        padding: 5px;
+        border-radius: 50%;
+        transition: all 0.2s ease;
+    `;
+    
+    closeBtn.addEventListener('mouseenter', function() {
+        this.style.background = 'var(--bg-tertiary)';
+        this.style.color = 'var(--text-primary)';
+    });
+    
+    closeBtn.addEventListener('mouseleave', function() {
+        this.style.background = 'none';
+        this.style.color = 'var(--text-secondary)';
+    });
+    
+    closeBtn.addEventListener('click', function() {
+        modal.remove();
+    });
+    
+    // Cerrar modal al hacer clic fuera
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+    
+    // Cerrar modal con Escape
+    document.addEventListener('keydown', function closeOnEscape(e) {
+        if (e.key === 'Escape') {
+            modal.remove();
+            document.removeEventListener('keydown', closeOnEscape);
+        }
+    });
+    
+    document.body.appendChild(modal);
+    
+    // Limpiar el campo de búsqueda
+    const searchInput = document.getElementById('searchInput');
+    searchInput.value = '';
 }
 
 function toggleTheme() {
@@ -801,9 +1270,9 @@ function setupMobileExperience() {
     updateMobileTime();
     setInterval(updateMobileTime, 1000);
     
-    // Apps del portafolio móviles
+    // Apps del portafolio móviles (doble clic)
     document.querySelectorAll('.mobile-app').forEach(app => {
-        app.addEventListener('click', function() {
+        app.addEventListener('dblclick', function() {
             const windowType = this.getAttribute('data-window');
             openWindow(windowType);
         });
@@ -996,17 +1465,9 @@ window.addEventListener('resize', detectMobile);
 
 // --- Funcionalidad del CV ---
 function setupCVFunctionality() {
-    const viewPdfBtn = document.getElementById('viewPdfBtn');
     const backToPreviewBtn = document.getElementById('backToPreviewBtn');
     const cvPreview = document.getElementById('cvPreview');
     const cvPdfViewer = document.getElementById('cvPdfViewer');
-    
-    if (viewPdfBtn) {
-        viewPdfBtn.addEventListener('click', function() {
-            cvPreview.style.display = 'none';
-            cvPdfViewer.style.display = 'block';
-        });
-    }
     
     if (backToPreviewBtn) {
         backToPreviewBtn.addEventListener('click', function() {
@@ -1018,17 +1479,9 @@ function setupCVFunctionality() {
 
 // Configurar funcionalidad del CV para una ventana específica
 function setupCVFunctionalityForWindow(window) {
-    const viewPdfBtn = window.querySelector('#viewPdfBtn');
     const backToPreviewBtn = window.querySelector('#backToPreviewBtn');
     const cvPreview = window.querySelector('#cvPreview');
     const cvPdfViewer = window.querySelector('#cvPdfViewer');
-    
-    if (viewPdfBtn) {
-        viewPdfBtn.addEventListener('click', function() {
-            cvPreview.style.display = 'none';
-            cvPdfViewer.style.display = 'block';
-        });
-    }
     
     if (backToPreviewBtn) {
         backToPreviewBtn.addEventListener('click', function() {
