@@ -53,7 +53,7 @@ body {
 .desktop {
     width: 100vw;
     height: calc(100vh - 40px);
-    background: url('../assets/images/fondoEnClaro.png') center center;
+    background: url('../assets/images/fondoEnClaro.jpeg') center center;
     background-size: cover;
     background-position: center;
     position: relative;
@@ -63,7 +63,7 @@ body {
   
   /* Fondo oscuro para el tema dark */
   [data-theme="dark"] .desktop {
-    background: url('../assets/images/fondoEnOscuro.png') center center;
+    background: url('../assets/images/fondoEnOscuro.jpeg') center center;
     background-size: cover;
     background-repeat: no-repeat;
   }

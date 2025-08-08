@@ -268,14 +268,19 @@ function openWindow(windowType) {
     const uniqueId = `${windowType}-${++windowCounter}`;
     newWindow.id = uniqueId;
     
-    // Posición inicial centrada
+    // Posición inicial centrada en el área del escritorio
     const windowWidth = 800; // Ancho aproximado de la ventana
     const windowHeight = 600; // Alto aproximado de la ventana
-    const screenWidth = window.innerWidth;
-    const screenHeight = window.innerHeight;
     
-    const left = Math.max(0, (screenWidth - windowWidth) / 2);
-    const top = Math.max(0, (screenHeight - windowHeight) / 2);
+    // Obtener las dimensiones del área del escritorio (excluyendo la barra de tareas)
+    const desktopElement = document.getElementById('desktop');
+    const desktopRect = desktopElement.getBoundingClientRect();
+    const desktopWidth = desktopRect.width;
+    const desktopHeight = desktopRect.height;
+    
+    // Calcular posición centrada dentro del área del escritorio
+    const left = Math.max(0, (desktopWidth - windowWidth) / 2);
+    const top = Math.max(0, (desktopHeight - windowHeight) / 2);
     
     newWindow.style.left = `${left}px`;
     newWindow.style.top = `${top}px`;
