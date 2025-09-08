@@ -70,85 +70,150 @@ if (mobileWindowsBtn && mobileStartMenu) {
 // Traducciones
 const translations = {
     es: {
-        searchPlaceholder: "Buscar apps o archivos...",
-        startMenuSearch: "Buscar en el portafolio...",
-        projects: "Proyectos",
-        cv: "CV",
-        about: "Sobre mí",
-        skills: "Skills",
-        contact: "Contacto",
-        frontend: "Frontend",
-        backend: "Backend",
-        tools: "Herramientas",
-        sendMessage: "Enviar Mensaje",
-        downloadCV: "Descargar CV Completo",
-        socialMedia: "Redes Sociales",
-        aboutMe: "Sobre mí",
-        myTimeline: "Mi Timeline",
-        experience: "Experiencia",
-        education: "Formación",
-        fullStackDeveloper: "Desarrollador Full Stack",
-        portfolioDescription: "Portafolio personal con diseño tipo escritorio Windows",
-        ecommerceDescription: "Tienda online con carrito de compras y gestión de productos",
-        apiDescription: "API para gestión de usuarios y autenticación",
-        reportsDescription: "Aplicación de análisis de datos y generación de reportes",
-        aboutDescription: "Soy un desarrollador con experiencia en tecnologías frontend y backend. Me especializo en Java, C#, JavaScript y frameworks modernos. Me gusta trabajar en proyectos desafiantes y aprender nuevas tecnologías.",
-        contactForm: "Envíame un mensaje",
-        name: "Nombre:",
-        email: "Email:",
-        message: "Mensaje:",
-        sendButton: "Enviar Mensaje",
-        successMessage: "¡Mensaje enviado con éxito!",
-        portfolioTitle: "Portafolio de Ainhoa",
-        portfolioSubtitle: "Tu sistema operativo personal",
-        socialNetworks: "Redes Sociales",
-        portfolioApps: "Apps del Portafolio",
-        systemApps: "Apps del Sistema"
+      projects: "Proyectos",
+      cv: "CV",
+      about: "Sobre mí",
+      skills: "Habilidades",
+      contact: "Contacto",
+      portfolioTitle: "Portafolio de Ainhoa",
+      portfolioSubtitle: "Tu sistema operativo personal",
+      startMenuSearch: "Buscar en el portafolio...",
+      searchPlaceholder: "Buscar apps o archivos...",
+      contactTitle: "Contáctame",
+      namePlaceholder: "Nombre",
+      emailPlaceholder: "Correo electrónico",
+      messagePlaceholder: "Mensaje",
+      sendButton: "Enviar"
     },
     en: {
-        searchPlaceholder: "Search apps or files...",
-        startMenuSearch: "Search in portfolio...",
-        projects: "Projects",
-        cv: "CV",
-        about: "About",
-        skills: "Skills",
-        contact: "Contact",
-        frontend: "Frontend",
-        backend: "Backend",
-        tools: "Tools",
-        sendMessage: "Send Message",
-        downloadCV: "Download Full CV",
-        socialMedia: "Social Media",
-        aboutMe: "About Me",
-        myTimeline: "My Timeline",
-        experience: "Experience",
-        education: "Education",
-        fullStackDeveloper: "Full Stack Developer",
-        portfolioDescription: "Personal portfolio with Windows desktop design",
-        ecommerceDescription: "Online store with shopping cart and product management",
-        apiDescription: "API for user management and authentication",
-        reportsDescription: "Data analysis application and report generation",
-        aboutDescription: "I am a developer with experience in frontend and backend technologies. I specialize in Java, C#, JavaScript and modern frameworks. I like working on challenging projects and learning new technologies.",
-        contactForm: "Send me a message",
-        name: "Name:",
-        email: "Email:",
-        message: "Message:",
-        sendButton: "Send Message",
-        successMessage: "Message sent successfully!",
-        portfolioTitle: "Porfolio Ainhoa",
-        portfolioSubtitle: "Your personal operating system",
-        socialNetworks: "Social Networks",
-        portfolioApps: "Portfolio Apps",
-        systemApps: "System Apps"
+      projects: "Projects",
+      cv: "CV",
+      about: "About me",
+      skills: "Skills",
+      contact: "Contact",
+      portfolioTitle: "Ainhoa's Portfolio",
+      portfolioSubtitle: "Your personal operating system",
+      startMenuSearch: "Search the portfolio...",
+      searchPlaceholder: "Search apps or files...",
+      contactTitle: "Contact me",
+      namePlaceholder: "Name",
+      emailPlaceholder: "Email",
+      messagePlaceholder: "Message",
+      sendButton: "Send"
     }
-};
+  };
+  
+  const LANG_KEY = "portfolio_lang";
+  
+  function getInitialLang() {
+    const saved = localStorage.getItem(LANG_KEY);
+    if (saved) return saved;
+    return navigator.language && navigator.language.toLowerCase().startsWith("es") ? "es" : "en";
+  }
+  
+  function applyTranslations(lang) {
+    // Textos en el contenido
+    document.querySelectorAll("[data-translate]").forEach(el => {
+      const key = el.getAttribute("data-translate");
+      const txt = translations[lang]?.[key];
+      if (typeof txt === "string") el.textContent = txt;
+    });
+  
+    // Placeholders
+    document.querySelectorAll("[data-translate-placeholder]").forEach(el => {
+      const key = el.getAttribute("data-translate-placeholder");
+      const txt = translations[lang]?.[key];
+      if (typeof txt === "string") el.setAttribute("placeholder", txt);
+    });
+  
+    // (Opcional) otros atributos como title/aria-label si los usas:
+    document.querySelectorAll("[data-translate-title]").forEach(el => {
+      const key = el.getAttribute("data-translate-title");
+      const txt = translations[lang]?.[key];
+      if (typeof txt === "string") el.setAttribute("title", txt);
+    });
+    document.querySelectorAll("[data-translate-aria]").forEach(el => {
+      const key = el.getAttribute("data-translate-aria");
+      const txt = translations[lang]?.[key];
+      if (typeof txt === "string") el.setAttribute("aria-label", txt);
+    });
+  
+    // Actualiza el indicador del botón de idioma (barra de tareas)
+    const langBtn = document.getElementById("languageToggle");
+    if (langBtn) {
+      const span = langBtn.querySelector("span");
+      if (span) span.textContent = lang.toUpperCase();
+    }
+  
+    // Actualiza el botón del panel móvil
+    const mobileLangBtn = document.getElementById("mobileLanguageBtn");
+    if (mobileLangBtn) {
+      const span = mobileLangBtn.querySelector("span");
+      if (span) span.textContent = lang === "es" ? "Idioma" : "Language";
+    }
+  
+    // Marca de idioma en <html>
+    document.documentElement.setAttribute("lang", lang);
+  }
+  
+  function setLang(lang) {
+    localStorage.setItem(LANG_KEY, lang);
+    applyTranslations(lang);
+  }
+  
+  document.addEventListener("DOMContentLoaded", () => {
+    // Aplica idioma inicial
+    applyTranslations(getInitialLang());
+  
+    // Toggle rápido con el botón de la barra de tareas
+    const toggle = document.getElementById("languageToggle");
+    if (toggle) {
+      toggle.addEventListener("click", () => {
+        const current = localStorage.getItem(LANG_KEY) || getInitialLang();
+        setLang(current === "es" ? "en" : "es");
+      });
+    }
+  
+    // Selector del menú emergente (si lo usas)
+    const languageMenu = document.getElementById("languageMenu");
+    if (languageMenu) {
+      languageMenu.addEventListener("click", (e) => {
+        const option = e.target.closest(".language-option");
+        if (!option) return;
+        const newLang = option.dataset.lang;
+        if (newLang === "es" || newLang === "en") setLang(newLang);
+      });
+    }
+  
+    // Botón del panel móvil
+    const mobileLanguageBtn = document.getElementById("mobileLanguageBtn");
+    if (mobileLanguageBtn) {
+      mobileLanguageBtn.addEventListener("click", () => {
+        const current = localStorage.getItem(LANG_KEY) || getInitialLang();
+        setLang(current === "es" ? "en" : "es");
+      });
+    }
+  });
 
-// Inicialización
+
+// Inicializar la aplicación cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
+    // Cargar preferencias guardadas primero
+    loadSavedPreferences();
+    
+    // Inicializar la aplicación
     initializeApp();
+    
+    // Aplicar el idioma guardado
+    const savedLanguage = localStorage.getItem('language') || 'es';
+    
+    // Forzar la actualización del idioma después de que todo esté cargado
+    setTimeout(() => {
+        changeLanguage(savedLanguage);
+    }, 100);
+    
     updateTime();
     setInterval(updateTime, 1000);
-    loadSavedPreferences();
 });
 
 function initializeApp() {
@@ -294,6 +359,9 @@ function openWindow(windowType) {
     
     // Añadir a la barra de tareas
     addToTaskbar(uniqueId, windowType);
+    
+    // Asegurarse de que el título de la ventana esté en el idioma actual
+    updateWindowTitle(newWindow, windowType);
     
     // Añadir a la lista de ventanas activas
     activeWindows.push({
@@ -514,9 +582,20 @@ function minimizeWindow(window) {
 }
 
 function addToTaskbar(windowId, windowType) {
+    // Verificar si ya existe un botón para esta ventana
+    const existingButton = document.querySelector(`.taskbar-app[data-window-id="${windowId}"]`);
+    if (existingButton) {
+        // Si ya existe, actualizarlo y mostrarlo
+        existingButton.style.display = 'flex';
+        updateTaskbarButtonText(existingButton, windowType);
+        return existingButton;
+    }
+    
+    // Si no existe, crear un nuevo botón
     const taskbarApp = document.createElement('div');
     taskbarApp.className = 'taskbar-app';
     taskbarApp.setAttribute('data-window-id', windowId);
+    taskbarApp.setAttribute('data-window-type', windowType);
     
     // Icono según el tipo de ventana
     const icons = {
@@ -527,18 +606,43 @@ function addToTaskbar(windowId, windowType) {
         'contact': 'fas fa-envelope'
     };
     
-    taskbarApp.innerHTML = `<i class="${icons[windowType]}"></i>`;
+    const iconClass = icons[windowType] || 'fas fa-window';
     
-    // Event listener para restaurar ventana
+    taskbarApp.innerHTML = `
+        <i class="${iconClass}"></i>
+        <span></span>
+    `;
+    
+    // Event listeners
     taskbarApp.addEventListener('click', function() {
         const window = document.getElementById(windowId);
         if (window) {
-            window.style.display = 'block';
-            bringToFront(window);
+            if (window.style.display === 'none') {
+                window.style.display = 'block';
+                bringToFront(window);
+            } else {
+                minimizeWindow(window);
+            }
         }
     });
     
+    // Añadir a la barra de tareas
     taskbarApps.appendChild(taskbarApp);
+    
+    // Asegurarse de que el botón de la barra de tareas esté en el idioma actual
+    updateTaskbarButtonText(taskbarApp, windowType);
+    
+    return taskbarApp;
+}
+
+// Función para actualizar el texto de un botón de la barra de tareas
+function updateTaskbarButtonText(button, windowType) {
+    const translationKey = windowType === 'cv' ? 'cv' : windowType;
+    const span = button.querySelector('span');
+    
+    if (span && translations[currentLanguage] && translations[currentLanguage][translationKey]) {
+        span.textContent = translations[currentLanguage][translationKey];
+    }
 }
 
 function removeFromTaskbar(windowId) {
@@ -580,32 +684,51 @@ function toggleLanguageMenu() {
 }
 
 function changeLanguage(lang) {
+    // Verificar si el idioma es válido
+    if (!translations[lang]) {
+        console.warn(`El idioma '${lang}' no está soportado`);
+        return;
+    }
+    
+    // Actualizar el idioma actual
     currentLanguage = lang;
     
-    // Actualizar botón de idioma
+    // Actualizar botón de idioma en el escritorio
     const langToggle = document.getElementById('languageToggle');
-    langToggle.querySelector('span').textContent = lang.toUpperCase();
+    if (langToggle) {
+        const span = langToggle.querySelector('span');
+        if (span) span.textContent = lang.toUpperCase();
+    }
     
-    // Actualizar placeholders
+    // Actualizar botón de idioma en móvil
+    const mobileLangBtn = document.getElementById('mobileLanguageBtn');
+    if (mobileLangBtn) {
+        const mobileLangText = mobileLangBtn.querySelector('span');
+        if (mobileLangText) {
+            mobileLangText.textContent = lang === 'es' ? 'Español' : 'English';
+        }
+    }
+    
+    // Actualizar placeholders de búsqueda
     if (searchInput) {
-        searchInput.placeholder = translations[lang].searchPlaceholder;
+        searchInput.placeholder = translations[lang].searchPlaceholder || '';
     }
     
     // Actualizar menú inicio
     const startMenuSearch = document.querySelector('.start-menu-search input');
     if (startMenuSearch) {
-        startMenuSearch.placeholder = translations[lang].startMenuSearch;
+        startMenuSearch.placeholder = translations[lang].startMenuSearch || '';
     }
     
-    // Actualizar títulos
+    // Actualizar títulos del menú inicio
     const startMenuTitle = document.querySelector('.start-menu-header h3');
     if (startMenuTitle) {
-        startMenuTitle.textContent = translations[lang].portfolioTitle;
+        startMenuTitle.textContent = translations[lang].portfolioTitle || '';
     }
     
     const startMenuSubtitle = document.querySelector('.start-menu-header p');
     if (startMenuSubtitle) {
-        startMenuSubtitle.textContent = translations[lang].portfolioSubtitle;
+        startMenuSubtitle.textContent = translations[lang].portfolioSubtitle || '';
     }
     
     // Actualizar opciones de idioma
@@ -616,8 +739,130 @@ function changeLanguage(lang) {
         }
     });
     
+    // Actualizar elementos con data-translate
+    document.querySelectorAll('[data-translate]').forEach(element => {
+        const key = element.getAttribute('data-translate');
+        if (translations[lang] && translations[lang][key] !== undefined) {
+            element.textContent = translations[lang][key];
+        }
+    });
+    
+    // Actualizar placeholders de formularios
+    document.querySelectorAll('[data-translate-placeholder]').forEach(element => {
+        const key = element.getAttribute('data-translate-placeholder');
+        if (translations[lang] && translations[lang][key] !== undefined) {
+            element.placeholder = translations[lang][key];
+        }
+    });
+    
+    // Actualizar atributos title
+    document.querySelectorAll('[data-translate-title]').forEach(element => {
+        const key = element.getAttribute('data-translate-title');
+        if (translations[lang] && translations[lang][key] !== undefined) {
+            element.title = translations[lang][key];
+        }
+    });
+    
+        // Actualizar títulos de las ventanas abiertas
+    updateWindowTitles();
+    
+    // Actualizar botones de la barra de tareas
+    document.querySelectorAll('.taskbar-app').forEach(button => {
+        const windowType = button.getAttribute('data-window-type');
+        if (windowType) {
+            updateTaskbarButtonText(button, windowType);
+        }
+    });
+    
+    // Actualizar el texto del botón de idioma
+    const languageToggle = document.getElementById('languageToggle');
+    if (languageToggle) {
+        const span = languageToggle.querySelector('span');
+        if (span) {
+            span.textContent = lang.toUpperCase();
+        }
+    }
+    
+    // Actualizar el texto del botón de idioma móvil
+    const mobileLanguageBtn = document.getElementById('mobileLanguageBtn');
+    if (mobileLanguageBtn) {
+        const mobileLangText = mobileLanguageBtn.querySelector('span');
+        if (mobileLangText) {
+            mobileLangText.textContent = lang === 'es' ? 'Español' : 'English';
+        }
+    }
+    
+    // Forzar actualización de la interfaz
+    document.dispatchEvent(new Event('languageChanged'));
+    
     // Guardar preferencia
     localStorage.setItem('language', lang);
+}
+
+// Función para actualizar el título de una ventana específica
+function updateWindowTitle(windowElement, windowType) {
+    const titleElement = windowElement.querySelector('.window-title span');
+    if (titleElement) {
+        // Mapeo de tipos de ventana a claves de traducción
+        const windowTypeMap = {
+            'projects': 'projects',
+            'cv': 'cv',
+            'about': 'about',
+            'skills': 'skills',
+            'contact': 'contact'
+        };
+        
+        const translationKey = windowTypeMap[windowType] || windowType;
+        
+        // Actualizar título de la ventana
+        if (translations[currentLanguage] && translations[currentLanguage][translationKey]) {
+            titleElement.textContent = translations[currentLanguage][translationKey];
+        }
+    }
+}
+
+
+// Función para actualizar los títulos de las ventanas abiertas
+function updateWindowTitles() {
+    // Actualizar títulos de las ventanas abiertas
+    document.querySelectorAll('.window').forEach(window => {
+        const windowId = window.id;
+        const windowType = windowId.replace(/-window.*$/, ''); // Eliminar cualquier sufijo después de -window
+        updateWindowTitle(window, windowType);
+        
+        // Actualizar también el botón correspondiente en la barra de tareas
+        const taskbarButton = document.querySelector(`.taskbar-app[data-window="${windowType}"]`);
+        if (taskbarButton) {
+            const buttonText = taskbarButton.querySelector('span');
+            if (buttonText) {
+                const titleElement = window.querySelector('.window-title span');
+                if (titleElement) {
+                    buttonText.textContent = titleElement.textContent;
+                }
+            }
+        }
+    });
+    
+    // Actualizar botones de la barra de tareas que no están abiertos
+    document.querySelectorAll('.taskbar-app').forEach(button => {
+        const windowType = button.getAttribute('data-window');
+        if (windowType) {
+            // Verificar si la ventana no está abierta
+            const isWindowOpen = Array.from(document.querySelectorAll('.window')).some(
+                win => win.id.startsWith(windowType + '-window')
+            );
+            
+            if (!isWindowOpen) {
+                const translationKey = windowType === 'cv' ? 'cv' : windowType;
+                if (translations[currentLanguage] && translations[currentLanguage][translationKey]) {
+                    const buttonText = button.querySelector('span');
+                    if (buttonText) {
+                        buttonText.textContent = translations[currentLanguage][translationKey];
+                    }
+                }
+            }
+        }
+    });
 }
 
 let searchTimeout;
