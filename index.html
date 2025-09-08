@@ -645,20 +645,32 @@
                     <div class="contact-form-column">
                         <div class="contact-form">
                             <h2 data-translate="contactTitle">Contactame</h2>
-                            <form id="contactForm">
+                            <form id="contactForm" novalidate>
+                                <!-- Anti-spam (honeypot) -->
+                                <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+                              
                                 <div class="form-group">
-                                    <input type="text" id="name" name="name" data-translate-placeholder="namePlaceholder" placeholder="Nombre" required>
+                                  <input type="text" id="name" name="name" placeholder="Nombre" required minlength="2">
                                 </div>
+                              
                                 <div class="form-group">
-                                    <input type="email" id="email" name="email" data-translate-placeholder="emailPlaceholder" placeholder="Correo Electrónico" required>
+                                  <input type="email" id="email" name="email" placeholder="Correo Electrónico" required>
                                 </div>
+                              
                                 <div class="form-group">
-                                    <textarea id="message" name="message" data-translate-placeholder="messagePlaceholder" placeholder="Mensaje" rows="6" required></textarea>
+                                  <textarea id="message" name="message" placeholder="Mensaje" rows="6" required minlength="10"></textarea>
                                 </div>
-                                <button type="submit" class="btn-send" data-translate="sendButton">
-                                    Enviar
-                                </button>
+                              
+                                <!-- Asunto opcional -->
+                                <input type="hidden" name="_subject" value="Nuevo mensaje desde el portafolio">
+                                                              
+                                <button type="submit" class="btn-send" data-translate="sendButton">Enviar</button>
+                            
+                                <!-- Mensajes de estado -->
+                                <div id="formStatus" class="form-alert" role="status" aria-live="polite"></div>  
                             </form>
+                              
+                              
                         </div>
                     </div>
                     

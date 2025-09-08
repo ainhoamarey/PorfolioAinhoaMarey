@@ -1970,6 +1970,48 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     text-align: center;
 }
+/* Mensajes de estado del formulario */
+.form-alert {
+    display: none;
+    margin: 12px 0 16px;
+    padding: 12px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+    border: 1px solid transparent;
+  }
+  
+  .form-alert.show { display: block; }
+  .form-alert.success {
+    background: #e6ffed;
+    border-color: #a7f3d0;
+    color: #065f46;
+  }
+  .form-alert.error {
+    background: #fee2e2;
+    border-color: #fecaca;
+    color: #7f1d1d;
+  }
+  /* Estado del formulario de contacto */
+.form-alert {
+    display: none;
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .form-alert.show { display: block; }
+  .form-alert.success {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #10b98133;
+  }
+  .form-alert.error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #ef444433;
+  }
+  
 
 /* Responsive para móvil */
 @media screen and (max-width: 768px) {

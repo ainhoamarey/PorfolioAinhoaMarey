@@ -1,8 +1,25 @@
-// Variables globales
+// =============================
+// CONFIGURACIÓN FORMULARIO
+// =============================
+// ⚠️ Endpoint real de Formspree:
+const FORM_ENDPOINT = "https://formspree.io/f/mzzayovn";
+
+// Mensajes UI para el botón de enviar
+const UI_TEXT = {
+  es: { sending: "Enviando...", sent_ok: "¡Mensaje enviado! Te responderé pronto.", sent_err: "No se pudo enviar el mensaje.", check_fields: "Por favor, revisa los campos marcados.", net_err: "Error de red. Inténtalo de nuevo." },
+  en: { sending: "Sending...", sent_ok: "Message sent! I'll reply soon.", sent_err: "Message could not be sent.", check_fields: "Please check the highlighted fields.", net_err: "Network error. Try again." }
+};
+
+// =============================
+// VARIABLES GLOBALES
+// =============================
 let activeWindows = [];
 let windowCounter = 0;
 let isDarkTheme = false;
-let currentLanguage = localStorage.getItem('language') || 'es';
+
+const LANG_KEY = "portfolio_lang";
+let currentLanguage = localStorage.getItem(LANG_KEY) || (navigator.language && navigator.language.toLowerCase().startsWith("es") ? "es" : "en");
+
 let isMaximized = false;
 let currentTheme = localStorage.getItem('theme') || 'light';
 let openWindows = [];
@@ -59,8 +76,7 @@ if (mobileWindowsBtn && mobileStartMenu) {
         app.addEventListener('click', (e) => {
             const win = app.getAttribute('data-window');
             if (win) {
-                // Lógica para abrir la ventana correspondiente
-                openWindow(win); // Asume que existe la función openWindow
+                openWindow(win);
             }
             closeMobileStartMenu();
         });
@@ -69,149 +85,136 @@ if (mobileWindowsBtn && mobileStartMenu) {
 
 // Traducciones
 const translations = {
-    es: {
-      projects: "Proyectos",
-      cv: "CV",
-      about: "Sobre mí",
-      skills: "Habilidades",
-      contact: "Contacto",
-      portfolioTitle: "Portafolio de Ainhoa",
-      portfolioSubtitle: "Tu sistema operativo personal",
-      startMenuSearch: "Buscar en el portafolio...",
-      searchPlaceholder: "Buscar apps o archivos...",
-      contactTitle: "Contáctame",
-      namePlaceholder: "Nombre",
-      emailPlaceholder: "Correo electrónico",
-      messagePlaceholder: "Mensaje",
-      sendButton: "Enviar"
-    },
-    en: {
-      projects: "Projects",
-      cv: "CV",
-      about: "About me",
-      skills: "Skills",
-      contact: "Contact",
-      portfolioTitle: "Ainhoa's Portfolio",
-      portfolioSubtitle: "Your personal operating system",
-      startMenuSearch: "Search the portfolio...",
-      searchPlaceholder: "Search apps or files...",
-      contactTitle: "Contact me",
-      namePlaceholder: "Name",
-      emailPlaceholder: "Email",
-      messagePlaceholder: "Message",
-      sendButton: "Send"
-    }
-  };
-  
-  const LANG_KEY = "portfolio_lang";
-  
-  function getInitialLang() {
-    const saved = localStorage.getItem(LANG_KEY);
-    if (saved) return saved;
-    return navigator.language && navigator.language.toLowerCase().startsWith("es") ? "es" : "en";
+  es: {
+    projects: "Proyectos",
+    cv: "CV",
+    about: "Sobre mí",
+    skills: "Habilidades",
+    contact: "Contacto",
+    portfolioTitle: "Portafolio de Ainhoa",
+    portfolioSubtitle: "Tu sistema operativo personal",
+    startMenuSearch: "Buscar en el portafolio...",
+    searchPlaceholder: "Buscar apps o archivos...",
+    contactTitle: "Contáctame",
+    namePlaceholder: "Nombre",
+    emailPlaceholder: "Correo electrónico",
+    messagePlaceholder: "Mensaje",
+    sendButton: "Enviar"
+  },
+  en: {
+    projects: "Projects",
+    cv: "CV",
+    about: "About me",
+    skills: "Skills",
+    contact: "Contact",
+    portfolioTitle: "Ainhoa's Portfolio",
+    portfolioSubtitle: "Your personal operating system",
+    startMenuSearch: "Search the portfolio...",
+    searchPlaceholder: "Search apps or files...",
+    contactTitle: "Contact me",
+    namePlaceholder: "Name",
+    emailPlaceholder: "Email",
+    messagePlaceholder: "Message",
+    sendButton: "Send"
   }
-  
-  function applyTranslations(lang) {
-    // Textos en el contenido
-    document.querySelectorAll("[data-translate]").forEach(el => {
-      const key = el.getAttribute("data-translate");
-      const txt = translations[lang]?.[key];
-      if (typeof txt === "string") el.textContent = txt;
-    });
-  
-    // Placeholders
-    document.querySelectorAll("[data-translate-placeholder]").forEach(el => {
-      const key = el.getAttribute("data-translate-placeholder");
-      const txt = translations[lang]?.[key];
-      if (typeof txt === "string") el.setAttribute("placeholder", txt);
-    });
-  
-    // (Opcional) otros atributos como title/aria-label si los usas:
-    document.querySelectorAll("[data-translate-title]").forEach(el => {
-      const key = el.getAttribute("data-translate-title");
-      const txt = translations[lang]?.[key];
-      if (typeof txt === "string") el.setAttribute("title", txt);
-    });
-    document.querySelectorAll("[data-translate-aria]").forEach(el => {
-      const key = el.getAttribute("data-translate-aria");
-      const txt = translations[lang]?.[key];
-      if (typeof txt === "string") el.setAttribute("aria-label", txt);
-    });
-  
-    // Actualiza el indicador del botón de idioma (barra de tareas)
-    const langBtn = document.getElementById("languageToggle");
-    if (langBtn) {
-      const span = langBtn.querySelector("span");
-      if (span) span.textContent = lang.toUpperCase();
-    }
-  
-    // Actualiza el botón del panel móvil
-    const mobileLangBtn = document.getElementById("mobileLanguageBtn");
-    if (mobileLangBtn) {
-      const span = mobileLangBtn.querySelector("span");
-      if (span) span.textContent = lang === "es" ? "Idioma" : "Language";
-    }
-  
-    // Marca de idioma en <html>
-    document.documentElement.setAttribute("lang", lang);
-  }
-  
-  function setLang(lang) {
-    localStorage.setItem(LANG_KEY, lang);
-    applyTranslations(lang);
-  }
-  
-  document.addEventListener("DOMContentLoaded", () => {
-    // Aplica idioma inicial
-    applyTranslations(getInitialLang());
-  
-    // Toggle rápido con el botón de la barra de tareas
-    const toggle = document.getElementById("languageToggle");
-    if (toggle) {
-      toggle.addEventListener("click", () => {
-        const current = localStorage.getItem(LANG_KEY) || getInitialLang();
-        setLang(current === "es" ? "en" : "es");
-      });
-    }
-  
-    // Selector del menú emergente (si lo usas)
-    const languageMenu = document.getElementById("languageMenu");
-    if (languageMenu) {
-      languageMenu.addEventListener("click", (e) => {
-        const option = e.target.closest(".language-option");
-        if (!option) return;
-        const newLang = option.dataset.lang;
-        if (newLang === "es" || newLang === "en") setLang(newLang);
-      });
-    }
-  
-    // Botón del panel móvil
-    const mobileLanguageBtn = document.getElementById("mobileLanguageBtn");
-    if (mobileLanguageBtn) {
-      mobileLanguageBtn.addEventListener("click", () => {
-        const current = localStorage.getItem(LANG_KEY) || getInitialLang();
-        setLang(current === "es" ? "en" : "es");
-      });
-    }
+};
+
+// Idioma inicial
+function getInitialLang() {
+  const saved = localStorage.getItem(LANG_KEY);
+  if (saved) return saved;
+  return navigator.language && navigator.language.toLowerCase().startsWith("es") ? "es" : "en";
+}
+
+function applyTranslations(lang) {
+  // Textos
+  document.querySelectorAll("[data-translate]").forEach(el => {
+    const key = el.getAttribute("data-translate");
+    const txt = translations[lang]?.[key];
+    if (typeof txt === "string") el.textContent = txt;
   });
 
+  // Placeholders
+  document.querySelectorAll("[data-translate-placeholder]").forEach(el => {
+    const key = el.getAttribute("data-translate-placeholder");
+    const txt = translations[lang]?.[key];
+    if (typeof txt === "string") el.setAttribute("placeholder", txt);
+  });
+
+  // Otros atributos
+  document.querySelectorAll("[data-translate-title]").forEach(el => {
+    const key = el.getAttribute("data-translate-title");
+    const txt = translations[lang]?.[key];
+    if (typeof txt === "string") el.setAttribute("title", txt);
+  });
+  document.querySelectorAll("[data-translate-aria]").forEach(el => {
+    const key = el.getAttribute("data-translate-aria");
+    const txt = translations[lang]?.[key];
+    if (typeof txt === "string") el.setAttribute("aria-label", txt);
+  });
+
+  // Indicadores
+  const langBtn = document.getElementById("languageToggle");
+  if (langBtn) {
+    const span = langBtn.querySelector("span");
+    if (span) span.textContent = lang.toUpperCase();
+  }
+  const mobileLangBtn = document.getElementById("mobileLanguageBtn");
+  if (mobileLangBtn) {
+    const span = mobileLangBtn.querySelector("span");
+    if (span) span.textContent = lang === "es" ? "Idioma" : "Language";
+  }
+  document.documentElement.setAttribute("lang", lang);
+}
+
+function setLang(lang) {
+  currentLanguage = lang;
+  localStorage.setItem(LANG_KEY, lang);
+  applyTranslations(lang);
+  // Forzar actualización de textos dependientes
+  changeLanguage(lang);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  applyTranslations(getInitialLang());
+
+  const toggle = document.getElementById("languageToggle");
+  if (toggle) {
+    toggle.addEventListener("click", () => {
+      const current = localStorage.getItem(LANG_KEY) || getInitialLang();
+      setLang(current === "es" ? "en" : "es");
+    });
+  }
+
+  const languageMenu = document.getElementById("languageMenu");
+  if (languageMenu) {
+    languageMenu.addEventListener("click", (e) => {
+      const option = e.target.closest(".language-option");
+      if (!option) return;
+      const newLang = option.dataset.lang;
+      if (newLang === "es" || newLang === "en") setLang(newLang);
+    });
+  }
+
+  const mobileLanguageBtn = document.getElementById("mobileLanguageBtn");
+  if (mobileLanguageBtn) {
+    mobileLanguageBtn.addEventListener("click", () => {
+      const current = localStorage.getItem(LANG_KEY) || getInitialLang();
+      setLang(current === "es" ? "en" : "es");
+    });
+  }
+});
 
 // Inicializar la aplicación cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
-    // Cargar preferencias guardadas primero
     loadSavedPreferences();
-    
-    // Inicializar la aplicación
     initializeApp();
-    
-    // Aplicar el idioma guardado
-    const savedLanguage = localStorage.getItem('language') || 'es';
-    
-    // Forzar la actualización del idioma después de que todo esté cargado
+
+    const savedLanguage = localStorage.getItem(LANG_KEY) || getInitialLang();
     setTimeout(() => {
         changeLanguage(savedLanguage);
     }, 100);
-    
+
     updateTime();
     setInterval(updateTime, 1000);
 });
@@ -219,8 +222,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeApp() {
     // Detectar si es móvil
     isMobile = window.innerWidth <= 768;
-    
-    // Aplicar estilos específicos de móvil
+
     if (isMobile) {
         document.body.classList.add('mobile');
     } else {
@@ -228,7 +230,7 @@ function initializeApp() {
         setupDesktopExperience();
     }
 
-    // Event listeners para iconos del escritorio (doble clic)
+    // Doble clic iconos escritorio
     document.querySelectorAll('.desktop-icon').forEach(icon => {
         icon.addEventListener('dblclick', function() {
             const windowType = this.getAttribute('data-window');
@@ -236,7 +238,7 @@ function initializeApp() {
         });
     });
 
-    // Event listeners para menú inicio (doble clic)
+    // Doble clic menú inicio
     document.querySelectorAll('.start-app').forEach(app => {
         app.addEventListener('dblclick', function() {
             const windowType = this.getAttribute('data-window');
@@ -245,16 +247,12 @@ function initializeApp() {
         });
     });
 
-    // Botón inicio
-    startButton.addEventListener('click', toggleStartMenu);
+    // Botones varios
+    if (startButton) startButton.addEventListener('click', toggleStartMenu);
+    if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
+    if (languageToggle) languageToggle.addEventListener('click', toggleLanguageMenu);
 
-    // Toggle tema
-    themeToggle.addEventListener('click', toggleTheme);
-
-    // Toggle idioma
-    languageToggle.addEventListener('click', toggleLanguageMenu);
-
-    // Selector de idioma
+    // Selector idioma
     document.querySelectorAll('.language-option').forEach(option => {
         option.addEventListener('click', function() {
             const lang = this.getAttribute('data-lang');
@@ -263,7 +261,7 @@ function initializeApp() {
         });
     });
 
-    // Barra de búsqueda
+    // Búsqueda
     if (searchInput) {
         searchInput.addEventListener('input', handleSearch);
         searchInput.addEventListener('keypress', handleSearchKeyPress);
@@ -279,22 +277,19 @@ function initializeApp() {
 
     // Cerrar menús al hacer clic fuera
     document.addEventListener('click', function(e) {
-        if (!startMenu.contains(e.target) && !startButton.contains(e.target)) {
+        if (startMenu && !startMenu.contains(e.target) && !startButton.contains(e.target)) {
             startMenu.style.display = 'none';
         }
-        if (!languageMenu.contains(e.target) && !languageToggle.contains(e.target)) {
+        if (languageMenu && !languageMenu.contains(e.target) && !languageToggle.contains(e.target)) {
             languageMenu.style.display = 'none';
         }
     });
 
-    // Inicializar niveles de skills
+    // Inicializar skills
     initializeSkillLevels();
 
-    // Formulario de contacto
-    const contactForm = document.getElementById('contactForm');
-    if (contactForm) {
-        contactForm.addEventListener('submit', handleContactSubmit);
-    }
+    // Formulario de contacto (delegado: ver al final del archivo)
+    // (Quitamos el listener directo aquí para que funcione también en ventanas clonadas)
 
     // Botón de encendido
     const powerButton = document.querySelector('.power-button');
@@ -308,89 +303,73 @@ function initializeApp() {
 }
 
 function setupDesktopExperience() {
-    // Mostrar elementos de escritorio
     const desktopElements = document.querySelectorAll('.desktop-icons, .taskbar');
     desktopElements.forEach(el => el.style.display = 'flex');
 }
 
 function openWindow(windowType) {
     const windowId = `${windowType}-window`;
-    let window = document.getElementById(windowId);
-    
-    if (!window) {
+    let windowEl = document.getElementById(windowId);
+
+    if (!windowEl) {
         console.error(`Ventana ${windowId} no encontrada`);
         return;
     }
 
-    // Si la ventana ya está abierta, traerla al frente
-    if (window.style.display !== 'none') {
-        bringToFront(window);
+    if (windowEl.style.display !== 'none') {
+        bringToFront(windowEl);
         return;
     }
 
-    // Crear nueva instancia de ventana
-    const newWindow = window.cloneNode(true);
+    const newWindow = windowEl.cloneNode(true);
     const uniqueId = `${windowType}-${++windowCounter}`;
     newWindow.id = uniqueId;
-    
-    // Posición inicial centrada en el área del escritorio
-    const windowWidth = 800; // Ancho aproximado de la ventana
-    const windowHeight = 600; // Alto aproximado de la ventana
-    
-    // Obtener las dimensiones del área del escritorio (excluyendo la barra de tareas)
+
+    const windowWidth = 800;
+    const windowHeight = 600;
+
     const desktopElement = document.getElementById('desktop');
     const desktopRect = desktopElement.getBoundingClientRect();
     const desktopWidth = desktopRect.width;
     const desktopHeight = desktopRect.height;
-    
-    // Calcular posición centrada dentro del área del escritorio
+
     const left = Math.max(0, (desktopWidth - windowWidth) / 2);
     const top = Math.max(0, (desktopHeight - windowHeight) / 2);
-    
+
     newWindow.style.left = `${left}px`;
     newWindow.style.top = `${top}px`;
     newWindow.style.display = 'block';
     newWindow.style.zIndex = 1000 + activeWindows.length;
-    
+
     desktop.appendChild(newWindow);
-    
-    // Configurar eventos de la ventana
+
     setupWindowEvents(newWindow, windowType);
-    
-    // Añadir a la barra de tareas
     addToTaskbar(uniqueId, windowType);
-    
-    // Asegurarse de que el título de la ventana esté en el idioma actual
     updateWindowTitle(newWindow, windowType);
-    
-    // Añadir a la lista de ventanas activas
+
     activeWindows.push({
         id: uniqueId,
         type: windowType,
         element: newWindow,
         isMaximized: false
     });
-    
-    // Traer al frente
+
     bringToFront(newWindow);
-    
-    // Configurar funcionalidad específica del CV
+
     if (windowType === 'cv') {
         setupCVFunctionalityForWindow(newWindow);
     }
-    
-    // Configurar funcionalidad específica de Skills
     if (windowType === 'skills') {
         setupSkillsNavigationForWindow(newWindow);
     }
 }
 
-function setupWindowEvents(window, windowType) {
-    const header = window.querySelector('.window-header');
-    const closeBtn = window.querySelector('.close-btn');
-    const minimizeBtn = window.querySelector('.minimize-btn');
-    const maximizeBtn = window.querySelector('.maximize-btn');
-    
+function setupWindowEvents(windowEl, windowType) {
+    const header = windowEl.querySelector('.window-header');
+    const closeBtn = windowEl.querySelector('.close-btn');
+    const minimizeBtn = windowEl.querySelector('.minimize-btn');
+    const maximizeBtn = windowEl.querySelector('.maximize-btn');
+
     let isDragging = false;
     let currentX;
     let currentY;
@@ -398,76 +377,50 @@ function setupWindowEvents(window, windowType) {
     let initialY;
     let xOffset = 0;
     let yOffset = 0;
-    let originalPosition = {};
 
-    // Hacer ventana arrastrable
     header.addEventListener('mousedown', function(e) {
         if (e.target.closest('.window-controls')) return;
-        
+
         isDragging = true;
         initialX = e.clientX - xOffset;
         initialY = e.clientY - yOffset;
         header.style.cursor = 'grabbing';
-        
-        // Guardar posición original
-        originalPosition = {
-            left: window.style.left,
-            top: window.style.top,
-            width: window.style.width,
-            height: window.style.height
-        };
     });
 
     document.addEventListener('mousemove', function(e) {
         if (!isDragging) return;
-        
+
         e.preventDefault();
         currentX = e.clientX - initialX;
         currentY = e.clientY - initialY;
         xOffset = currentX;
         yOffset = currentY;
-        
-        window.style.transform = `translate(${currentX}px, ${currentY}px)`;
+
+        windowEl.style.transform = `translate(${currentX}px, ${currentY}px)`;
     });
 
     document.addEventListener('mouseup', function() {
         if (!isDragging) return;
-        
+
         isDragging = false;
         header.style.cursor = 'grab';
-        
-        // Actualizar posición absoluta
-        const rect = window.getBoundingClientRect();
-        window.style.left = rect.left + 'px';
-        window.style.top = rect.top + 'px';
-        window.style.transform = 'none';
+
+        const rect = windowEl.getBoundingClientRect();
+        windowEl.style.left = rect.left + 'px';
+        windowEl.style.top = rect.top + 'px';
+        windowEl.style.transform = 'none';
     });
 
-    // Botón cerrar
-    closeBtn.addEventListener('click', function() {
-        closeWindow(window);
-    });
+    if (closeBtn) closeBtn.addEventListener('click', function() { closeWindow(windowEl); });
+    if (minimizeBtn) minimizeBtn.addEventListener('click', function() { minimizeWindow(windowEl); });
+    if (maximizeBtn) maximizeBtn.addEventListener('click', function() { toggleMaximize(windowEl); });
 
-    // Botón minimizar
-    minimizeBtn.addEventListener('click', function() {
-        minimizeWindow(window);
-    });
+    windowEl.addEventListener('click', function() { bringToFront(windowEl); });
 
-    // Botón maximizar
-    maximizeBtn.addEventListener('click', function() {
-        toggleMaximize(window);
-    });
-
-    // Hacer ventana activa al hacer clic
-    window.addEventListener('click', function() {
-        bringToFront(window);
-    });
-
-    // Redimensionar ventana
-    setupWindowResize(window);
+    setupWindowResize(windowEl);
 }
 
-function setupWindowResize(window) {
+function setupWindowResize(windowEl) {
     const resizeHandle = document.createElement('div');
     resizeHandle.className = 'resize-handle';
     resizeHandle.style.cssText = `
@@ -480,16 +433,16 @@ function setupWindowResize(window) {
         background: linear-gradient(-45deg, transparent 30%, var(--border-color) 30%, var(--border-color) 40%, transparent 40%, transparent 60%, var(--border-color) 60%, var(--border-color) 70%, transparent 70%);
         border-radius: 0 0 12px 0;
     `;
-    
-    window.appendChild(resizeHandle);
-    
+
+    windowEl.appendChild(resizeHandle);
+
     let isResizing = false;
     let startWidth, startHeight, startX, startY;
 
     resizeHandle.addEventListener('mousedown', function(e) {
         isResizing = true;
-        startWidth = window.offsetWidth;
-        startHeight = window.offsetHeight;
+        startWidth = windowEl.offsetWidth;
+        startHeight = windowEl.offsetHeight;
         startX = e.clientX;
         startY = e.clientY;
         e.preventDefault();
@@ -497,13 +450,13 @@ function setupWindowResize(window) {
 
     document.addEventListener('mousemove', function(e) {
         if (!isResizing) return;
-        
+
         const newWidth = startWidth + (e.clientX - startX);
         const newHeight = startHeight + (e.clientY - startY);
-        
+
         if (newWidth > 300 && newHeight > 200) {
-            window.style.width = newWidth + 'px';
-            window.style.height = newHeight + 'px';
+            windowEl.style.width = newWidth + 'px';
+            windowEl.style.height = newHeight + 'px';
         }
     });
 
@@ -512,92 +465,68 @@ function setupWindowResize(window) {
     });
 }
 
-function toggleMaximize(window) {
-    const windowData = activeWindows.find(w => w.element === window);
+function toggleMaximize(windowEl) {
+    const windowData = activeWindows.find(w => w.element === windowEl);
     if (!windowData) return;
 
+    const maximizeBtn = windowEl.querySelector('.maximize-btn i');
+
     if (windowData.isMaximized) {
-        // Restaurar
-        window.classList.remove('maximized');
-        window.style.left = windowData.originalPosition?.left || '100px';
-        window.style.top = windowData.originalPosition?.top || '100px';
-        window.style.width = windowData.originalPosition?.width || '400px';
-        window.style.height = windowData.originalPosition?.height || '300px';
+        windowEl.classList.remove('maximized');
+        windowEl.style.left = windowData.originalPosition?.left || '100px';
+        windowEl.style.top = windowData.originalPosition?.top || '100px';
+        windowEl.style.width = windowData.originalPosition?.width || '400px';
+        windowEl.style.height = windowData.originalPosition?.height || '300px';
         windowData.isMaximized = false;
-        
-        const maximizeBtn = window.querySelector('.maximize-btn i');
-        maximizeBtn.className = 'fas fa-expand';
+        if (maximizeBtn) maximizeBtn.className = 'fas fa-expand';
     } else {
-        // Maximizar
         windowData.originalPosition = {
-            left: window.style.left,
-            top: window.style.top,
-            width: window.style.width,
-            height: window.style.height
+            left: windowEl.style.left,
+            top: windowEl.style.top,
+            width: windowEl.style.width,
+            height: windowEl.style.height
         };
-        
-        window.classList.add('maximized');
+        windowEl.classList.add('maximized');
         windowData.isMaximized = true;
-        
-        const maximizeBtn = window.querySelector('.maximize-btn i');
-        maximizeBtn.className = 'fas fa-compress';
+        if (maximizeBtn) maximizeBtn.className = 'fas fa-compress';
     }
 }
 
-function bringToFront(window) {
-    // Remover clase active de todas las ventanas
-    document.querySelectorAll('.window').forEach(w => {
-        w.classList.remove('active');
-    });
-    
-    // Añadir clase active a la ventana actual
-    window.classList.add('active');
-    
-    // Traer al frente
+function bringToFront(windowEl) {
+    document.querySelectorAll('.window').forEach(w => w.classList.remove('active'));
+    windowEl.classList.add('active');
+
     const maxZ = Math.max(...Array.from(document.querySelectorAll('.window')).map(w => parseInt(w.style.zIndex) || 0));
-    window.style.zIndex = maxZ + 1;
-    
-    // Actualizar barra de tareas
-    updateTaskbarActive(window.id);
+    windowEl.style.zIndex = maxZ + 1;
+
+    updateTaskbarActive(windowEl.id);
 }
 
-function closeWindow(window) {
-    const windowId = window.id;
-    
-    // Remover de la lista de ventanas activas
+function closeWindow(windowEl) {
+    const windowId = windowEl.id;
     activeWindows = activeWindows.filter(w => w.id !== windowId);
-    
-    // Remover de la barra de tareas
     removeFromTaskbar(windowId);
-    
-    // Remover del DOM
-    window.remove();
+    windowEl.remove();
 }
 
-function minimizeWindow(window) {
-    window.style.display = 'none';
-    
-    // Actualizar barra de tareas
-    updateTaskbarActive(window.id, false);
+function minimizeWindow(windowEl) {
+    windowEl.style.display = 'none';
+    updateTaskbarActive(windowEl.id, false);
 }
 
 function addToTaskbar(windowId, windowType) {
-    // Verificar si ya existe un botón para esta ventana
     const existingButton = document.querySelector(`.taskbar-app[data-window-id="${windowId}"]`);
     if (existingButton) {
-        // Si ya existe, actualizarlo y mostrarlo
         existingButton.style.display = 'flex';
         updateTaskbarButtonText(existingButton, windowType);
         return existingButton;
     }
-    
-    // Si no existe, crear un nuevo botón
+
     const taskbarApp = document.createElement('div');
     taskbarApp.className = 'taskbar-app';
     taskbarApp.setAttribute('data-window-id', windowId);
     taskbarApp.setAttribute('data-window-type', windowType);
-    
-    // Icono según el tipo de ventana
+
     const icons = {
         'projects': 'fas fa-folder',
         'cv': 'fas fa-file-pdf',
@@ -605,41 +534,35 @@ function addToTaskbar(windowId, windowType) {
         'skills': 'fas fa-tools',
         'contact': 'fas fa-envelope'
     };
-    
+
     const iconClass = icons[windowType] || 'fas fa-window';
-    
+
     taskbarApp.innerHTML = `
         <i class="${iconClass}"></i>
         <span></span>
     `;
-    
-    // Event listeners
+
     taskbarApp.addEventListener('click', function() {
-        const window = document.getElementById(windowId);
-        if (window) {
-            if (window.style.display === 'none') {
-                window.style.display = 'block';
-                bringToFront(window);
+        const win = document.getElementById(windowId);
+        if (win) {
+            if (win.style.display === 'none') {
+                win.style.display = 'block';
+                bringToFront(win);
             } else {
-                minimizeWindow(window);
+                minimizeWindow(win);
             }
         }
     });
-    
-    // Añadir a la barra de tareas
+
     taskbarApps.appendChild(taskbarApp);
-    
-    // Asegurarse de que el botón de la barra de tareas esté en el idioma actual
     updateTaskbarButtonText(taskbarApp, windowType);
-    
     return taskbarApp;
 }
 
-// Función para actualizar el texto de un botón de la barra de tareas
 function updateTaskbarButtonText(button, windowType) {
     const translationKey = windowType === 'cv' ? 'cv' : windowType;
     const span = button.querySelector('span');
-    
+
     if (span && translations[currentLanguage] && translations[currentLanguage][translationKey]) {
         span.textContent = translations[currentLanguage][translationKey];
     }
@@ -647,23 +570,14 @@ function updateTaskbarButtonText(button, windowType) {
 
 function removeFromTaskbar(windowId) {
     const taskbarApp = taskbarApps.querySelector(`[data-window-id="${windowId}"]`);
-    if (taskbarApp) {
-        taskbarApp.remove();
-    }
+    if (taskbarApp) taskbarApp.remove();
 }
 
 function updateTaskbarActive(windowId, isActive = true) {
-    // Remover clase active de todas las apps
-    document.querySelectorAll('.taskbar-app').forEach(app => {
-        app.classList.remove('active');
-    });
-    
-    // Añadir clase active a la app correspondiente
+    document.querySelectorAll('.taskbar-app').forEach(app => app.classList.remove('active'));
     if (isActive) {
         const taskbarApp = taskbarApps.querySelector(`[data-window-id="${windowId}"]`);
-        if (taskbarApp) {
-            taskbarApp.classList.add('active');
-        }
+        if (taskbarApp) taskbarApp.classList.add('active');
     }
 }
 
@@ -684,182 +598,116 @@ function toggleLanguageMenu() {
 }
 
 function changeLanguage(lang) {
-    // Verificar si el idioma es válido
     if (!translations[lang]) {
         console.warn(`El idioma '${lang}' no está soportado`);
         return;
     }
-    
-    // Actualizar el idioma actual
     currentLanguage = lang;
-    
-    // Actualizar botón de idioma en el escritorio
+
+    // Botón idioma escritorio
     const langToggle = document.getElementById('languageToggle');
     if (langToggle) {
         const span = langToggle.querySelector('span');
         if (span) span.textContent = lang.toUpperCase();
     }
-    
-    // Actualizar botón de idioma en móvil
+    // Botón idioma móvil
     const mobileLangBtn = document.getElementById('mobileLanguageBtn');
     if (mobileLangBtn) {
         const mobileLangText = mobileLangBtn.querySelector('span');
-        if (mobileLangText) {
-            mobileLangText.textContent = lang === 'es' ? 'Español' : 'English';
-        }
+        if (mobileLangText) mobileLangText.textContent = lang === 'es' ? 'Español' : 'English';
     }
-    
-    // Actualizar placeholders de búsqueda
-    if (searchInput) {
-        searchInput.placeholder = translations[lang].searchPlaceholder || '';
-    }
-    
-    // Actualizar menú inicio
+
+    // Placeholders
+    if (searchInput) searchInput.placeholder = translations[lang].searchPlaceholder || '';
     const startMenuSearch = document.querySelector('.start-menu-search input');
-    if (startMenuSearch) {
-        startMenuSearch.placeholder = translations[lang].startMenuSearch || '';
-    }
-    
-    // Actualizar títulos del menú inicio
+    if (startMenuSearch) startMenuSearch.placeholder = translations[lang].startMenuSearch || '';
+
+    // Títulos menú inicio
     const startMenuTitle = document.querySelector('.start-menu-header h3');
-    if (startMenuTitle) {
-        startMenuTitle.textContent = translations[lang].portfolioTitle || '';
-    }
-    
+    if (startMenuTitle) startMenuTitle.textContent = translations[lang].portfolioTitle || '';
     const startMenuSubtitle = document.querySelector('.start-menu-header p');
-    if (startMenuSubtitle) {
-        startMenuSubtitle.textContent = translations[lang].portfolioSubtitle || '';
-    }
-    
-    // Actualizar opciones de idioma
+    if (startMenuSubtitle) startMenuSubtitle.textContent = translations[lang].portfolioSubtitle || '';
+
+    // Opciones idioma
     document.querySelectorAll('.language-option').forEach(option => {
         option.classList.remove('active');
-        if (option.getAttribute('data-lang') === lang) {
-            option.classList.add('active');
-        }
+        if (option.getAttribute('data-lang') === lang) option.classList.add('active');
     });
-    
-    // Actualizar elementos con data-translate
+
+    // data-translate
     document.querySelectorAll('[data-translate]').forEach(element => {
         const key = element.getAttribute('data-translate');
         if (translations[lang] && translations[lang][key] !== undefined) {
             element.textContent = translations[lang][key];
         }
     });
-    
-    // Actualizar placeholders de formularios
     document.querySelectorAll('[data-translate-placeholder]').forEach(element => {
         const key = element.getAttribute('data-translate-placeholder');
         if (translations[lang] && translations[lang][key] !== undefined) {
             element.placeholder = translations[lang][key];
         }
     });
-    
-    // Actualizar atributos title
     document.querySelectorAll('[data-translate-title]').forEach(element => {
         const key = element.getAttribute('data-translate-title');
         if (translations[lang] && translations[lang][key] !== undefined) {
             element.title = translations[lang][key];
         }
     });
-    
-        // Actualizar títulos de las ventanas abiertas
+
     updateWindowTitles();
-    
+
     // Actualizar botones de la barra de tareas
     document.querySelectorAll('.taskbar-app').forEach(button => {
         const windowType = button.getAttribute('data-window-type');
-        if (windowType) {
-            updateTaskbarButtonText(button, windowType);
-        }
+        if (windowType) updateTaskbarButtonText(button, windowType);
     });
-    
-    // Actualizar el texto del botón de idioma
-    const languageToggle = document.getElementById('languageToggle');
-    if (languageToggle) {
-        const span = languageToggle.querySelector('span');
-        if (span) {
-            span.textContent = lang.toUpperCase();
-        }
-    }
-    
-    // Actualizar el texto del botón de idioma móvil
-    const mobileLanguageBtn = document.getElementById('mobileLanguageBtn');
-    if (mobileLanguageBtn) {
-        const mobileLangText = mobileLanguageBtn.querySelector('span');
-        if (mobileLangText) {
-            mobileLangText.textContent = lang === 'es' ? 'Español' : 'English';
-        }
-    }
-    
-    // Forzar actualización de la interfaz
+
+    // Refrescar UI dependiente
     document.dispatchEvent(new Event('languageChanged'));
-    
-    // Guardar preferencia
-    localStorage.setItem('language', lang);
+    localStorage.setItem(LANG_KEY, lang);
 }
 
-// Función para actualizar el título de una ventana específica
+// Actualiza el título de una ventana específica
 function updateWindowTitle(windowElement, windowType) {
     const titleElement = windowElement.querySelector('.window-title span');
-    if (titleElement) {
-        // Mapeo de tipos de ventana a claves de traducción
-        const windowTypeMap = {
-            'projects': 'projects',
-            'cv': 'cv',
-            'about': 'about',
-            'skills': 'skills',
-            'contact': 'contact'
-        };
-        
-        const translationKey = windowTypeMap[windowType] || windowType;
-        
-        // Actualizar título de la ventana
-        if (translations[currentLanguage] && translations[currentLanguage][translationKey]) {
-            titleElement.textContent = translations[currentLanguage][translationKey];
-        }
+    if (!titleElement) return;
+
+    const windowTypeMap = {
+        'projects': 'projects',
+        'cv': 'cv',
+        'about': 'about',
+        'skills': 'skills',
+        'contact': 'contact'
+    };
+    const translationKey = windowTypeMap[windowType] || windowType;
+
+    if (translations[currentLanguage] && translations[currentLanguage][translationKey]) {
+        titleElement.textContent = translations[currentLanguage][translationKey];
     }
 }
 
-
-// Función para actualizar los títulos de las ventanas abiertas
+// Actualiza títulos de todas las ventanas y botones de taskbar (corregido selector)
 function updateWindowTitles() {
-    // Actualizar títulos de las ventanas abiertas
-    document.querySelectorAll('.window').forEach(window => {
-        const windowId = window.id;
-        const windowType = windowId.replace(/-window.*$/, ''); // Eliminar cualquier sufijo después de -window
-        updateWindowTitle(window, windowType);
-        
-        // Actualizar también el botón correspondiente en la barra de tareas
-        const taskbarButton = document.querySelector(`.taskbar-app[data-window="${windowType}"]`);
+    document.querySelectorAll('.window').forEach(windowEl => {
+        const windowId = windowEl.id;
+        const windowType = windowId.replace(/-window.*$/, '');
+        updateWindowTitle(windowEl, windowType);
+
+        const taskbarButton = document.querySelector(`.taskbar-app[data-window-type="${windowType}"]`);
         if (taskbarButton) {
             const buttonText = taskbarButton.querySelector('span');
-            if (buttonText) {
-                const titleElement = window.querySelector('.window-title span');
-                if (titleElement) {
-                    buttonText.textContent = titleElement.textContent;
-                }
-            }
+            const titleElement = windowEl.querySelector('.window-title span');
+            if (buttonText && titleElement) buttonText.textContent = titleElement.textContent;
         }
     });
-    
-    // Actualizar botones de la barra de tareas que no están abiertos
+
     document.querySelectorAll('.taskbar-app').forEach(button => {
-        const windowType = button.getAttribute('data-window');
+        const windowType = button.getAttribute('data-window-type');
         if (windowType) {
-            // Verificar si la ventana no está abierta
-            const isWindowOpen = Array.from(document.querySelectorAll('.window')).some(
-                win => win.id.startsWith(windowType + '-window')
-            );
-            
-            if (!isWindowOpen) {
-                const translationKey = windowType === 'cv' ? 'cv' : windowType;
-                if (translations[currentLanguage] && translations[currentLanguage][translationKey]) {
-                    const buttonText = button.querySelector('span');
-                    if (buttonText) {
-                        buttonText.textContent = translations[currentLanguage][translationKey];
-                    }
-                }
+            const translationKey = windowType === 'cv' ? 'cv' : windowType;
+            if (translations[currentLanguage] && translations[currentLanguage][translationKey]) {
+                const buttonText = button.querySelector('span');
+                if (buttonText) buttonText.textContent = translations[currentLanguage][translationKey];
             }
         }
     });
@@ -869,83 +717,48 @@ let searchTimeout;
 
 function handleSearch(e) {
     const query = e.target.value.toLowerCase().trim();
-    
-    // Limpiar timeout anterior
-    if (searchTimeout) {
-        clearTimeout(searchTimeout);
-    }
-    
+
+    if (searchTimeout) clearTimeout(searchTimeout);
+
     if (query.length < 2) {
-        // Limpiar mensaje de búsqueda si existe
         clearSearchMessage();
         clearSuggestions();
         return;
     }
-    
-    // Definir los apartados disponibles y sus términos de búsqueda
+
     const searchableItems = [
-        { 
-            type: 'projects', 
-            keywords: ['proyectos', 'proyecto', 'folder', 'carpeta', 'código', 'code', 'frontend', 'backend', 'api', 'web', 'app', 'aplicación', 'aplicacion', 'trabajos'],
-            title: 'Proyectos'
-        },
-        { 
-            type: 'cv', 
-            keywords: ['cv', 'curriculum', 'curriculum vitae', 'pdf', 'descargar', 'download', 'resume', 'vitae', 'currículum'],
-            title: 'CV - Curriculum Vitae'
-        },
-        { 
-            type: 'about', 
-            keywords: ['sobre mí', 'sobre mi', 'about', 'perfil', 'profile', 'usuario', 'user', 'persona', 'información', 'informacion', 'mí', 'mi', 'acerca'],
-            title: 'Sobre mí'
-        },
-        { 
-            type: 'skills', 
-            keywords: ['skills', 'habilidades', 'herramientas', 'tools', 'tecnologías', 'tecnologias', 'lenguajes', 'frameworks', 'java', 'javascript', 'css', 'html', 'tecnologia', 'conocimientos'],
-            title: 'Skills'
-        },
-        { 
-            type: 'contact', 
-            keywords: ['contacto', 'contact', 'mensaje', 'message', 'email', 'correo', 'enviar', 'send', 'formulario', 'form', 'escribir'],
-            title: 'Contacto'
-        }
+        { type: 'projects', keywords: ['proyectos','proyecto','folder','carpeta','código','code','frontend','backend','api','web','app','aplicación','aplicacion','trabajos'], title: 'Proyectos' },
+        { type: 'cv', keywords: ['cv','curriculum','curriculum vitae','pdf','descargar','download','resume','vitae','currículum'], title: 'CV - Curriculum Vitae' },
+        { type: 'about', keywords: ['sobre mí','sobre mi','about','perfil','profile','usuario','user','información','informacion','mí','mi','acerca'], title: 'Sobre mí' },
+        { type: 'skills', keywords: ['skills','habilidades','herramientas','tools','tecnologías','tecnologias','lenguajes','frameworks','java','javascript','css','html','tecnologia','conocimientos'], title: 'Skills' },
+        { type: 'contact', keywords: ['contacto','contact','mensaje','message','email','correo','enviar','send','formulario','form'], title: 'Contacto' }
     ];
-    
-    // Buscar coincidencias exactas
-    const exactMatches = searchableItems.filter(item => {
-        return item.keywords.some(keyword => keyword === query);
-    });
-    
-    // Buscar coincidencias parciales para sugerencias (solo si no hay exactas)
+
+    const exactMatches = searchableItems.filter(item =>
+      item.keywords.some(keyword => keyword === query)
+    );
+
     let partialMatches = [];
     if (exactMatches.length === 0) {
-        partialMatches = searchableItems.filter(item => {
-            return item.keywords.some(keyword => keyword.startsWith(query));
-        });
+        partialMatches = searchableItems.filter(item =>
+          item.keywords.some(keyword => keyword.startsWith(query))
+        );
     }
-    
-    // Limpiar mensaje anterior
+
     clearSearchMessage();
     clearSuggestions();
-    
+
     if (exactMatches.length > 0) {
-        // Coincidencia exacta - abrir directamente
         const firstMatch = exactMatches[0];
         openWindow(firstMatch.type);
-        
-        // Mostrar mensaje de éxito
         showSearchMessage(`Abriendo: ${firstMatch.title}`, 'success');
-        
-        // Limpiar el campo de búsqueda después de un tiempo
         setTimeout(() => {
             e.target.value = '';
             clearSearchMessage();
         }, 2000);
     } else if (partialMatches.length > 0) {
-        // Coincidencias parciales - mostrar sugerencias
         showSuggestions(partialMatches, query);
     } else {
-        // No hay coincidencias - mostrar modal de no encontrado
         showNotFoundModal(query);
     }
 }
@@ -953,22 +766,18 @@ function handleSearch(e) {
 function handleSearchKeyPress(e) {
     if (e.key === 'Enter') {
         const query = e.target.value.toLowerCase().trim();
-        if (query.length >= 2) {
-            handleSearch(e);
-        }
+        if (query.length >= 2) handleSearch(e);
     }
 }
 
 function showSearchMessage(message, type) {
-    // Eliminar mensaje anterior si existe
     clearSearchMessage();
-    
+
     const searchBar = document.querySelector('.search-bar');
     const messageDiv = document.createElement('div');
     messageDiv.className = `search-message ${type}`;
     messageDiv.textContent = message;
-    
-    // Crear un contenedor para el mensaje si no existe
+
     let messageContainer = document.querySelector('.search-message-container');
     if (!messageContainer) {
         messageContainer = document.createElement('div');
@@ -983,8 +792,7 @@ function showSearchMessage(message, type) {
         `;
         searchBar.parentNode.insertBefore(messageContainer, searchBar.nextSibling);
     }
-    
-    // Aplicar estilos al mensaje
+
     messageDiv.style.cssText = `
         padding: 8px 12px;
         border-radius: 6px;
@@ -992,38 +800,32 @@ function showSearchMessage(message, type) {
         font-weight: 500;
         animation: slideDown 0.3s ease;
         text-align: center;
-        ${type === 'success' ? 
-            'background: rgba(40, 167, 69, 0.95); color: white; border: 1px solid rgba(40, 167, 69, 0.3);' : 
+        ${type === 'success' ?
+            'background: rgba(40, 167, 69, 0.95); color: white; border: 1px solid rgba(40, 167, 69, 0.3);' :
             'background: rgba(220, 53, 69, 0.95); color: white; border: 1px solid rgba(220, 53, 69, 0.3);'
         }
     `;
-    
+
     messageContainer.appendChild(messageDiv);
 }
 
 function clearSearchMessage() {
     const messageContainer = document.querySelector('.search-message-container');
-    if (messageContainer) {
-        messageContainer.remove();
-    }
+    if (messageContainer) messageContainer.remove();
 }
 
 function clearSuggestions() {
     const suggestionsContainer = document.querySelector('.search-suggestions-container');
-    if (suggestionsContainer) {
-        suggestionsContainer.remove();
-    }
+    if (suggestionsContainer) suggestionsContainer.remove();
 }
 
 function showSuggestions(matches, query) {
-    // Eliminar sugerencias anteriores si existen
     clearSuggestions();
-    
+
     const searchBar = document.querySelector('.search-bar');
     const suggestionsContainer = document.createElement('div');
     suggestionsContainer.className = 'search-suggestions-container';
-    
-    // Crear lista de sugerencias únicas
+
     const uniqueSuggestions = [];
     matches.forEach(match => {
         match.keywords.forEach(keyword => {
@@ -1032,10 +834,9 @@ function showSuggestions(matches, query) {
             }
         });
     });
-    
-    // Limitar a 5 sugerencias
+
     const limitedSuggestions = uniqueSuggestions.slice(0, 5);
-    
+
     suggestionsContainer.innerHTML = `
         <div class="suggestions-list">
             ${limitedSuggestions.map(suggestion => `
@@ -1046,8 +847,7 @@ function showSuggestions(matches, query) {
             `).join('')}
         </div>
     `;
-    
-    // Aplicar estilos al contenedor
+
     suggestionsContainer.style.cssText = `
         position: absolute;
         top: 100%;
@@ -1062,51 +862,24 @@ function showSuggestions(matches, query) {
         overflow: hidden;
         animation: slideDown 0.3s ease;
     `;
-    
+
     const suggestionsList = suggestionsContainer.querySelector('.suggestions-list');
-    suggestionsList.style.cssText = `
-        max-height: 200px;
-        overflow-y: auto;
-    `;
-    
-    // Aplicar estilos a cada sugerencia
+    suggestionsList.style.cssText = `max-height: 200px; overflow-y: auto;`;
+
     const suggestionItems = suggestionsContainer.querySelectorAll('.suggestion-item');
     suggestionItems.forEach((item, index) => {
         item.style.cssText = `
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 16px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border-bottom: 1px solid var(--border-color);
+            display: flex; align-items: center; gap: 10px; padding: 12px 16px;
+            cursor: pointer; transition: all 0.2s ease; border-bottom: 1px solid var(--border-color);
             ${index === suggestionItems.length - 1 ? 'border-bottom: none;' : ''}
         `;
-        
         const icon = item.querySelector('i');
-        icon.style.cssText = `
-            color: var(--accent-color);
-            font-size: 14px;
-            width: 16px;
-        `;
-        
+        icon.style.cssText = `color: var(--accent-color); font-size: 14px; width: 16px;`;
         const text = item.querySelector('.suggestion-text');
-        text.style.cssText = `
-            color: var(--text-primary);
-            font-size: 14px;
-            flex: 1;
-        `;
-        
-        // Efectos hover
-        item.addEventListener('mouseenter', function() {
-            this.style.background = 'var(--bg-tertiary)';
-        });
-        
-        item.addEventListener('mouseleave', function() {
-            this.style.background = 'transparent';
-        });
-        
-        // Clic en sugerencia
+        text.style.cssText = `color: var(--text-primary); font-size: 14px; flex: 1;`;
+
+        item.addEventListener('mouseenter', function() { this.style.background = 'var(--bg-tertiary)'; });
+        item.addEventListener('mouseleave', function() { this.style.background = 'transparent'; });
         item.addEventListener('click', function() {
             const suggestion = this.getAttribute('data-suggestion');
             const searchInput = document.getElementById('searchInput');
@@ -1116,26 +889,22 @@ function showSuggestions(matches, query) {
             handleSearch({ target: searchInput });
         });
     });
-    
-    // Insertar después de la barra de búsqueda
+
     searchBar.parentNode.insertBefore(suggestionsContainer, searchBar.nextSibling);
-    
-    // Cerrar sugerencias al hacer clic fuera
+
     document.addEventListener('click', function closeSuggestions(e) {
         if (!suggestionsContainer.contains(e.target) && !searchBar.contains(e.target)) {
             clearSuggestions();
             document.removeEventListener('click', closeSuggestions);
         }
     });
-    
-    // Navegación con teclado
+
     let selectedIndex = -1;
     document.addEventListener('keydown', function handleKeyNavigation(e) {
         if (!suggestionsContainer.parentNode) {
             document.removeEventListener('keydown', handleKeyNavigation);
             return;
         }
-        
         switch(e.key) {
             case 'ArrowDown':
                 e.preventDefault();
@@ -1149,9 +918,7 @@ function showSuggestions(matches, query) {
                 break;
             case 'Enter':
                 e.preventDefault();
-                if (selectedIndex >= 0) {
-                    suggestionItems[selectedIndex].click();
-                }
+                if (selectedIndex >= 0) suggestionItems[selectedIndex].click();
                 break;
             case 'Escape':
                 clearSuggestions();
@@ -1159,7 +926,7 @@ function showSuggestions(matches, query) {
                 break;
         }
     });
-    
+
     function updateSelection() {
         suggestionItems.forEach((item, index) => {
             if (index === selectedIndex) {
@@ -1176,20 +943,14 @@ function showSuggestions(matches, query) {
 }
 
 function showNotFoundModal(query) {
-    // Eliminar modal anterior si existe
     const existingModal = document.querySelector('.not-found-modal');
-    if (existingModal) {
-        existingModal.remove();
-    }
-    
-    // Crear modal
+    if (existingModal) existingModal.remove();
+
     const modal = document.createElement('div');
     modal.className = 'not-found-modal';
     modal.innerHTML = `
         <div class="not-found-content">
-            <div class="not-found-icon">
-                <i class="fas fa-search"></i>
-            </div>
+            <div class="not-found-icon"><i class="fas fa-search"></i></div>
             <h3>No se encontró "${query}"</h3>
             <p>Prueba con alguna de estas opciones:</p>
             <div class="suggestions">
@@ -1199,92 +960,43 @@ function showNotFoundModal(query) {
                 <span class="suggestion">skills</span>
                 <span class="suggestion">contacto</span>
             </div>
-            <button class="close-modal-btn">
-                <i class="fas fa-times"></i>
-            </button>
+            <button class="close-modal-btn"><i class="fas fa-times"></i></button>
         </div>
     `;
-    
-    // Aplicar estilos
+
     modal.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 10000;
-        animation: fadeIn 0.3s ease;
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center;
+        z-index: 10000; animation: fadeIn 0.3s ease;
     `;
-    
+
     const content = modal.querySelector('.not-found-content');
     content.style.cssText = `
-        background: var(--bg-secondary);
-        border-radius: 12px;
-        padding: 30px;
-        text-align: center;
-        max-width: 400px;
-        width: 90%;
-        position: relative;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        background: var(--bg-secondary); border-radius: 12px; padding: 30px; text-align: center;
+        max-width: 400px; width: 90%; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         border: 1px solid var(--border-color);
     `;
-    
+
     const icon = modal.querySelector('.not-found-icon');
-    icon.style.cssText = `
-        font-size: 48px;
-        color: var(--accent-color);
-        margin-bottom: 20px;
-    `;
-    
+    icon.style.cssText = `font-size: 48px; color: var(--accent-color); margin-bottom: 20px;`;
+
     const title = modal.querySelector('h3');
-    title.style.cssText = `
-        color: var(--text-primary);
-        margin-bottom: 15px;
-        font-size: 18px;
-    `;
-    
+    title.style.cssText = `color: var(--text-primary); margin-bottom: 15px; font-size: 18px;`;
+
     const description = modal.querySelector('p');
-    description.style.cssText = `
-        color: var(--text-secondary);
-        margin-bottom: 20px;
-        font-size: 14px;
-    `;
-    
+    description.style.cssText = `color: var(--text-secondary); margin-bottom: 20px; font-size: 14px;`;
+
     const suggestions = modal.querySelector('.suggestions');
-    suggestions.style.cssText = `
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        justify-content: center;
-        margin-bottom: 20px;
-    `;
-    
+    suggestions.style.cssText = `display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 20px;`;
+
     const suggestionSpans = modal.querySelectorAll('.suggestion');
     suggestionSpans.forEach(span => {
         span.style.cssText = `
-            background: var(--accent-color);
-            color: white;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            background: var(--accent-color); color: white; padding: 6px 12px;
+            border-radius: 20px; font-size: 12px; cursor: pointer; transition: all 0.2s ease;
         `;
-        
-        span.addEventListener('mouseenter', function() {
-            this.style.transform = 'scale(1.05)';
-            this.style.background = '#005a9e';
-        });
-        
-        span.addEventListener('mouseleave', function() {
-            this.style.transform = 'scale(1)';
-            this.style.background = 'var(--accent-color)';
-        });
-        
+        span.addEventListener('mouseenter', function() { this.style.transform = 'scale(1.05)'; this.style.background = '#005a9e'; });
+        span.addEventListener('mouseleave', function() { this.style.transform = 'scale(1)'; this.style.background = 'var(--accent-color)'; });
         span.addEventListener('click', function() {
             const searchInput = document.getElementById('searchInput');
             searchInput.value = this.textContent;
@@ -1293,242 +1005,225 @@ function showNotFoundModal(query) {
             handleSearch({ target: searchInput });
         });
     });
-    
+
     const closeBtn = modal.querySelector('.close-modal-btn');
     closeBtn.style.cssText = `
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background: none;
-        border: none;
-        color: var(--text-secondary);
-        cursor: pointer;
-        font-size: 16px;
-        padding: 5px;
-        border-radius: 50%;
-        transition: all 0.2s ease;
+        position: absolute; top: 10px; right: 10px; background: none; border: none;
+        color: var(--text-secondary); cursor: pointer; font-size: 16px; padding: 5px;
+        border-radius: 50%; transition: all 0.2s ease;
     `;
-    
-    closeBtn.addEventListener('mouseenter', function() {
-        this.style.background = 'var(--bg-tertiary)';
-        this.style.color = 'var(--text-primary)';
-    });
-    
-    closeBtn.addEventListener('mouseleave', function() {
-        this.style.background = 'none';
-        this.style.color = 'var(--text-secondary)';
-    });
-    
-    closeBtn.addEventListener('click', function() {
-        modal.remove();
-    });
-    
-    // Cerrar modal al hacer clic fuera
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            modal.remove();
-        }
-    });
-    
-    // Cerrar modal con Escape
+    closeBtn.addEventListener('mouseenter', function() { this.style.background = 'var(--bg-tertiary)'; this.style.color = 'var(--text-primary)'; });
+    closeBtn.addEventListener('mouseleave', function() { this.style.background = 'none'; this.style.color = 'var(--text-secondary)'; });
+    closeBtn.addEventListener('click', function() { modal.remove(); });
+
+    modal.addEventListener('click', function(e) { if (e.target === modal) modal.remove(); });
     document.addEventListener('keydown', function closeOnEscape(e) {
         if (e.key === 'Escape') {
             modal.remove();
             document.removeEventListener('keydown', closeOnEscape);
         }
     });
-    
+
     document.body.appendChild(modal);
-    
-    // Limpiar el campo de búsqueda
-    const searchInput = document.getElementById('searchInput');
-    searchInput.value = '';
+
+    const si = document.getElementById('searchInput');
+    si.value = '';
 }
 
 function toggleTheme() {
     isDarkTheme = !isDarkTheme;
-    document.documentElement.setAttribute('data-theme', isDarkTheme ? 'dark' : 'light');
-    
-    // Actualizar icono
+    currentTheme = isDarkTheme ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', currentTheme);
+
     const icon = themeToggle.querySelector('i');
     icon.className = isDarkTheme ? 'fas fa-sun' : 'fas fa-moon';
-    
-    // Guardar preferencia
-    localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
+
+    localStorage.setItem('theme', currentTheme);
 }
 
 function updateTime() {
     const now = new Date();
-    const timeString = now.toLocaleTimeString(currentLanguage === 'es' ? 'es-ES' : 'en-US', { 
-        hour: '2-digit', 
-        minute: '2-digit' 
-    });
-    const dateString = now.toLocaleDateString(currentLanguage === 'es' ? 'es-ES' : 'en-US', { 
-        day: '2-digit', 
-        month: '2-digit', 
-        year: 'numeric' 
-    });
-    
-    taskbarTime.innerHTML = `
-        <div class="time">${timeString}</div>
-        <div class="date">${dateString}</div>
-    `;
+    const timeString = now.toLocaleTimeString(currentLanguage === 'es' ? 'es-ES' : 'en-US', { hour: '2-digit', minute: '2-digit' });
+    const dateString = now.toLocaleDateString(currentLanguage === 'es' ? 'es-ES' : 'en-US', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+    taskbarTime.innerHTML = `<div class="time">${timeString}</div><div class="date">${dateString}</div>`;
 }
 
 function initializeSkillLevels() {
-    // Animar barras de progreso cuando se abra la ventana de skills
     const skillsWindow = document.getElementById('skills-window');
-    if (skillsWindow) {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const skillLevels = entry.target.querySelectorAll('.skill-level');
-                    skillLevels.forEach(level => {
-                        const percentage = level.getAttribute('data-level');
-                        level.style.width = '0%';
-                        setTimeout(() => {
-                            level.style.width = percentage + '%';
-                        }, 100);
-                    });
-                    observer.unobserve(entry.target);
-                }
-            });
+    if (!skillsWindow) return;
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const skillLevels = entry.target.querySelectorAll('.skill-level');
+                skillLevels.forEach(level => {
+                    const percentage = level.getAttribute('data-level');
+                    level.style.width = '0%';
+                    setTimeout(() => { level.style.width = percentage + '%'; }, 100);
+                });
+                observer.unobserve(entry.target);
+            }
         });
-        
-        observer.observe(skillsWindow);
-    }
+    });
+
+    observer.observe(skillsWindow);
 }
 
+// =============================
+// ENVÍO REAL DEL FORMULARIO
+// =============================
 function handleContactSubmit(e) {
     e.preventDefault();
-    
-    const formData = new FormData(e.target);
-    const name = formData.get('name');
-    const email = formData.get('email');
-    const message = formData.get('message');
-    
-    // Simular envío
-    const btnSend = e.target.querySelector('.btn-send');
+
+    const form = e.target;
+    const nameInput = form.querySelector('#name');
+    const emailInput = form.querySelector('#email');
+    const messageInput = form.querySelector('#message');
+    const btnSend = form.querySelector('.btn-send');
+
+    let statusEl = form.querySelector('#formStatus');
+    if (!statusEl) {
+        statusEl = document.createElement('div');
+        statusEl.id = 'formStatus';
+        statusEl.className = 'form-status';
+        form.appendChild(statusEl);
+    }
+
+    const t = (typeof UI_TEXT !== 'undefined' && UI_TEXT[currentLanguage]) ? UI_TEXT[currentLanguage] : {
+        sending: "Enviando...",
+        sent_ok: "¡Mensaje enviado! Te responderé pronto.",
+        sent_err: "No se pudo enviar el mensaje.",
+        check_fields: "Por favor, revisa los campos marcados.",
+        net_err: "Error de red. Inténtalo de nuevo."
+    };
+
+    // Validación simple
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    [nameInput, emailInput, messageInput].forEach(el => el && el.classList.remove('is-invalid'));
+    let ok = true;
+    if (!nameInput || nameInput.value.trim().length < 2) { if (nameInput) nameInput.classList.add('is-invalid'); ok = false; }
+    if (!emailInput || !emailRe.test(emailInput.value.trim())) { if (emailInput) emailInput.classList.add('is-invalid'); ok = false; }
+    if (!messageInput || messageInput.value.trim().length < 10) { if (messageInput) messageInput.classList.add('is-invalid'); ok = false; }
+
+    statusEl.className = 'form-status';
+    statusEl.textContent = '';
+    if (!ok) {
+        statusEl.textContent = t.check_fields;
+        statusEl.classList.add('error');
+        return;
+    }
+
     const originalText = btnSend.innerHTML;
-    
-    btnSend.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
     btnSend.disabled = true;
-    
-    setTimeout(() => {
-        // Mostrar mensaje de éxito
-        const successMsg = currentLanguage === 'es' ? 
-            `¡Mensaje enviado con éxito!\n\nDe: ${name}\nEmail: ${email}\nMensaje: ${message}` :
-            `Message sent successfully!\n\nFrom: ${name}\nEmail: ${email}\nMessage: ${message}`;
-        
-        alert(successMsg);
-        
-        // Restaurar botón
-        btnSend.innerHTML = originalText;
+    btnSend.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + t.sending;
+
+    const data = new FormData(form);
+    data.append('_replyto', emailInput.value.trim());
+    if (!data.get('_subject')) data.append('_subject', 'Nuevo mensaje desde el portafolio');
+
+    fetch(FORM_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: data
+    })
+    .then(async (res) => {
+        let body = null;
+        try { body = await res.json(); } catch(_) {}
+        if (res.ok) {
+            form.reset();
+            statusEl.textContent = t.sent_ok;
+            statusEl.classList.add('success');
+        } else {
+            const msg = (body && body.errors && body.errors[0] && body.errors[0].message) ? body.errors[0].message : t.sent_err;
+            statusEl.textContent = msg;
+            statusEl.classList.add('error');
+        }
+    })
+    .catch(() => {
+        statusEl.textContent = t.net_err;
+        statusEl.classList.add('error');
+    })
+    .finally(() => {
         btnSend.disabled = false;
-        
-        // Limpiar formulario
-        e.target.reset();
-    }, 2000);
+        btnSend.innerHTML = originalText;
+    });
 }
 
 function loadSavedPreferences() {
-    // Cargar tema
+    // Tema
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
         isDarkTheme = savedTheme === 'dark';
+        currentTheme = savedTheme;
         document.documentElement.setAttribute('data-theme', savedTheme);
-        
         const icon = themeToggle.querySelector('i');
-        icon.className = isDarkTheme ? 'fas fa-sun' : 'fas fa-moon';
+        if (icon) icon.className = isDarkTheme ? 'fas fa-sun' : 'fas fa-moon';
     }
-    
-    // Cargar idioma
-    const savedLanguage = localStorage.getItem('language');
-    if (savedLanguage) {
-        changeLanguage(savedLanguage);
-    }
+
+    // Idioma
+    const savedLanguage = localStorage.getItem(LANG_KEY);
+    if (savedLanguage) changeLanguage(savedLanguage);
 }
 
 // Atajos de teclado
 document.addEventListener('keydown', function(e) {
-    // ESC para cerrar menús
     if (e.key === 'Escape') {
-        startMenu.style.display = 'none';
-        languageMenu.style.display = 'none';
+        if (startMenu) startMenu.style.display = 'none';
+        if (languageMenu) languageMenu.style.display = 'none';
     }
-    
-    // Ctrl + N para nueva ventana (ejemplo: abrir proyectos)
     if (e.ctrlKey && e.key === 'n') {
         e.preventDefault();
         openWindow('projects');
     }
-    
-    // Ctrl + L para cambiar idioma
     if (e.ctrlKey && e.key === 'l') {
         e.preventDefault();
         toggleLanguageMenu();
     }
-    
-    // Ctrl + T para cambiar tema
     if (e.ctrlKey && e.key === 't') {
         e.preventDefault();
         toggleTheme();
     }
-    
-    // F11 para maximizar ventana activa
     if (e.key === 'F11') {
         e.preventDefault();
         const activeWindow = document.querySelector('.window.active');
         if (activeWindow) {
             const maximizeBtn = activeWindow.querySelector('.maximize-btn');
-            if (maximizeBtn) {
-                maximizeBtn.click();
-            }
+            if (maximizeBtn) maximizeBtn.click();
         }
     }
 });
 
 // Prevenir contexto del botón derecho en el escritorio
-desktop.addEventListener('contextmenu', function(e) {
-    e.preventDefault();
-});
+if (desktop) {
+  desktop.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+}
 
-// Efectos de hover para iconos del escritorio
+// Efectos hover iconos escritorio
 document.querySelectorAll('.desktop-icon').forEach(icon => {
-    icon.addEventListener('mouseenter', function() {
-        this.style.transform = 'scale(1.05)';
-    });
-    
-    icon.addEventListener('mouseleave', function() {
-        this.style.transform = 'scale(1)';
-    });
+    icon.addEventListener('mouseenter', function() { this.style.transform = 'scale(1.05)'; });
+    icon.addEventListener('mouseleave', function() { this.style.transform = 'scale(1)'; });
 });
 
-// Animación de carga inicial
+// Animación carga inicial
 window.addEventListener('load', function() {
     document.body.style.opacity = '0';
     document.body.style.transition = 'opacity 0.5s ease';
-    
-    setTimeout(() => {
-        document.body.style.opacity = '1';
-    }, 100);
+    setTimeout(() => { document.body.style.opacity = '1'; }, 100);
 });
 
 // --- Funcionalidad móvil ---
 function setupMobileExperience() {
-    // Actualizar hora móvil
     updateMobileTime();
     setInterval(updateMobileTime, 1000);
-    
-    // Apps del portafolio móviles (doble clic)
+
     document.querySelectorAll('.mobile-app').forEach(app => {
         app.addEventListener('dblclick', function() {
             const windowType = this.getAttribute('data-window');
             openWindow(windowType);
         });
     });
-    
-    // Apps del sistema móviles
+
     document.querySelectorAll('.mobile-system-app').forEach(app => {
         app.addEventListener('click', function() {
             const appType = this.classList.contains('messages') ? 'messages' :
@@ -1536,57 +1231,53 @@ function setupMobileExperience() {
             handleMobileSystemApp(appType);
         });
     });
-    
-    // Panel deslizable
+
     const mobilePanel = document.getElementById('mobilePanel');
-    const mobilePanelHandle = mobilePanel.querySelector('.mobile-panel-handle');
-    
-    mobilePanelHandle.addEventListener('click', function() {
-        mobilePanel.classList.toggle('expanded');
-    });
-    
-    // Controles del panel móvil
+    if (mobilePanel) {
+        const mobilePanelHandle = mobilePanel.querySelector('.mobile-panel-handle');
+        if (mobilePanelHandle) {
+          mobilePanelHandle.addEventListener('click', function() {
+              mobilePanel.classList.toggle('expanded');
+          });
+        }
+    }
+
     const mobileLanguageBtn = document.getElementById('mobileLanguageBtn');
     const mobileThemeBtn = document.getElementById('mobileThemeBtn');
-    
-    mobileLanguageBtn.addEventListener('click', function() {
-        toggleLanguageMenu();
-        // Mostrar menú de idioma en móvil
-        showMobileLanguageMenu();
-    });
-    
-    mobileThemeBtn.addEventListener('click', function() {
-        toggleTheme();
-        // Actualizar icono del botón
-        const icon = this.querySelector('i');
-        const span = this.querySelector('span');
-        if (currentTheme === 'dark') {
-            icon.className = 'fas fa-sun';
-            span.textContent = 'Claro';
-        } else {
-            icon.className = 'fas fa-moon';
-            span.textContent = 'Oscuro';
-        }
-    });
+
+    if (mobileLanguageBtn) {
+      mobileLanguageBtn.addEventListener('click', function() {
+          toggleLanguageMenu();
+          showMobileLanguageMenu();
+      });
+    }
+
+    if (mobileThemeBtn) {
+      mobileThemeBtn.addEventListener('click', function() {
+          toggleTheme();
+          const icon = this.querySelector('i');
+          const span = this.querySelector('span');
+          if (isDarkTheme) {
+              if (icon) icon.className = 'fas fa-sun';
+              if (span) span.textContent = currentLanguage === 'es' ? 'Claro' : 'Light';
+          } else {
+              if (icon) icon.className = 'fas fa-moon';
+              if (span) span.textContent = currentLanguage === 'es' ? 'Oscuro' : 'Dark';
+          }
+      });
+    }
 }
 
 function updateMobileTime() {
     const mobileTime = document.getElementById('mobileTime');
-    if (mobileTime) {
-        const now = new Date();
-        const timeString = now.toLocaleTimeString('es-ES', { 
-            hour: '2-digit', 
-            minute: '2-digit' 
-        });
-        const dateString = now.toLocaleDateString('es-ES', { 
-            day: '2-digit', 
-            month: '2-digit', 
-            year: 'numeric' 
-        });
-        
-        mobileTime.querySelector('.time').textContent = timeString;
-        mobileTime.querySelector('.date').textContent = dateString;
-    }
+    if (!mobileTime) return;
+
+    const now = new Date();
+    const timeString = now.toLocaleTimeString(currentLanguage === 'es' ? 'es-ES' : 'en-US', { hour: '2-digit', minute: '2-digit' });
+    const dateString = now.toLocaleDateString(currentLanguage === 'es' ? 'es-ES' : 'en-US', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+    mobileTime.querySelector('.time').textContent = timeString;
+    mobileTime.querySelector('.date').textContent = dateString;
 }
 
 function handleMobileSystemApp(appType) {
@@ -1596,9 +1287,7 @@ function handleMobileSystemApp(appType) {
             break;
         case 'google':
             showMobileNotification('Google', 'Abriendo Google...');
-            setTimeout(() => {
-                window.open('https://www.google.com', '_blank');
-            }, 1000);
+            setTimeout(() => { window.open('https://www.google.com', '_blank'); }, 1000);
             break;
         case 'phone':
             showMobileNotification('Teléfono', 'Llamando...');
@@ -1616,37 +1305,22 @@ function showMobileNotification(title, message) {
         </div>
         <div class="notification-message">${message}</div>
     `;
-    
+
     notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: rgba(0, 0, 0, 0.9);
-        color: white;
-        padding: 15px;
-        border-radius: 10px;
-        z-index: 3000;
-        max-width: 250px;
-        animation: slideIn 0.3s ease;
+        position: fixed; top: 20px; right: 20px; background: rgba(0,0,0,0.9); color: white;
+        padding: 15px; border-radius: 10px; z-index: 3000; max-width: 250px; animation: slideIn 0.3s ease;
         backdrop-filter: blur(10px);
     `;
-    
+
     document.body.appendChild(notification);
-    
+
     const closeBtn = notification.querySelector('.notification-close');
-    closeBtn.addEventListener('click', () => {
-        notification.remove();
-    });
-    
-    setTimeout(() => {
-        if (notification.parentNode) {
-            notification.remove();
-        }
-    }, 3000);
+    closeBtn.addEventListener('click', () => { notification.remove(); });
+
+    setTimeout(() => { if (notification.parentNode) notification.remove(); }, 3000);
 }
 
 function showMobileLanguageMenu() {
-    // Crear menú de idioma para móvil
     const mobileLanguageMenu = document.createElement('div');
     mobileLanguageMenu.className = 'mobile-language-menu';
     mobileLanguageMenu.innerHTML = `
@@ -1655,38 +1329,20 @@ function showMobileLanguageMenu() {
             <button class="mobile-language-close">&times;</button>
         </div>
         <div class="mobile-language-options">
-            <button class="mobile-language-option" data-lang="es">
-                <span>🇪🇸</span>
-                <span>Español</span>
-            </button>
-            <button class="mobile-language-option" data-lang="en">
-                <span>🇺🇸</span>
-                <span>English</span>
-            </button>
+            <button class="mobile-language-option" data-lang="es"><span>🇪🇸</span><span>Español</span></button>
+            <button class="mobile-language-option" data-lang="en"><span>🇺🇸</span><span>English</span></button>
         </div>
     `;
-    
+
     mobileLanguageMenu.style.cssText = `
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: rgba(40, 40, 40, 0.95);
-        backdrop-filter: blur(20px);
-        border-radius: 15px;
-        padding: 20px;
-        z-index: 2000;
-        min-width: 250px;
-        animation: fadeIn 0.3s ease;
+        position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        background: rgba(40, 40, 40, 0.95); backdrop-filter: blur(20px); border-radius: 15px;
+        padding: 20px; z-index: 2000; min-width: 250px; animation: fadeIn 0.3s ease;
     `;
-    
+
     document.body.appendChild(mobileLanguageMenu);
-    
-    // Event listeners
-    mobileLanguageMenu.querySelector('.mobile-language-close').addEventListener('click', () => {
-        mobileLanguageMenu.remove();
-    });
-    
+
+    mobileLanguageMenu.querySelector('.mobile-language-close').addEventListener('click', () => { mobileLanguageMenu.remove(); });
     mobileLanguageMenu.querySelectorAll('.mobile-language-option').forEach(option => {
         option.addEventListener('click', function() {
             const lang = this.getAttribute('data-lang');
@@ -1696,10 +1352,9 @@ function showMobileLanguageMenu() {
     });
 }
 
-// Detectar dispositivo móvil y ajustar experiencia
 function detectMobile() {
     isMobile = window.innerWidth <= 768;
-    
+
     if (isMobile) {
         document.body.classList.add('mobile');
         setupMobileExperience();
@@ -1709,7 +1364,6 @@ function detectMobile() {
     }
 }
 
-// Detectar móvil al cargar y al cambiar tamaño
 window.addEventListener('load', detectMobile);
 window.addEventListener('resize', detectMobile);
 
@@ -1718,91 +1372,71 @@ function setupCVFunctionality() {
     const backToPreviewBtn = document.getElementById('backToPreviewBtn');
     const cvPreview = document.getElementById('cvPreview');
     const cvPdfViewer = document.getElementById('cvPdfViewer');
-    
+
     if (backToPreviewBtn) {
         backToPreviewBtn.addEventListener('click', function() {
-            cvPdfViewer.style.display = 'none';
-            cvPreview.style.display = 'block';
+            if (cvPdfViewer) cvPdfViewer.style.display = 'none';
+            if (cvPreview) cvPreview.style.display = 'block';
         });
     }
 }
 
-// Configurar funcionalidad del CV para una ventana específica
-function setupCVFunctionalityForWindow(window) {
-    const backToPreviewBtn = window.querySelector('#backToPreviewBtn');
-    const cvPreview = window.querySelector('#cvPreview');
-    const cvPdfViewer = window.querySelector('#cvPdfViewer');
-    
+function setupCVFunctionalityForWindow(windowEl) {
+    const backToPreviewBtn = windowEl.querySelector('#backToPreviewBtn');
+    const cvPreview = windowEl.querySelector('#cvPreview');
+    const cvPdfViewer = windowEl.querySelector('#cvPdfViewer');
+
     if (backToPreviewBtn) {
         backToPreviewBtn.addEventListener('click', function() {
-            cvPdfViewer.style.display = 'none';
-            cvPreview.style.display = 'block';
+            if (cvPdfViewer) cvPdfViewer.style.display = 'none';
+            if (cvPreview) cvPreview.style.display = 'block';
         });
     }
-} 
+}
 
-// Configurar funcionalidad de Skills para una ventana específica
-function setupSkillsNavigationForWindow(window) {
-    const categories = window.querySelectorAll('.skills-category');
-    const panels = window.querySelectorAll('.skills-panel');
-
-    console.log('Configurando navegación de Skills para ventana:', categories.length, 'categorías encontradas');
+// --- Skills ---
+function setupSkillsNavigationForWindow(windowEl) {
+    const categories = windowEl.querySelectorAll('.skills-category');
+    const panels = windowEl.querySelectorAll('.skills-panel');
 
     categories.forEach(category => {
         category.addEventListener('click', () => {
             const targetCategory = category.getAttribute('data-category');
-            console.log('Categoría seleccionada:', targetCategory);
-            
-            // Remover clase active de todas las categorías
+
             categories.forEach(cat => cat.classList.remove('active'));
-            
-            // Agregar clase active a la categoría seleccionada
             category.classList.add('active');
-            
-            // Ocultar todos los paneles
+
             panels.forEach(panel => panel.classList.remove('active'));
-            
-            // Mostrar el panel correspondiente
-            const targetPanel = window.querySelector(`#${targetCategory}-panel`);
-            if (targetPanel) {
-                targetPanel.classList.add('active');
-                console.log('Panel activado:', targetPanel.id);
-            } else {
-                console.error('Panel no encontrado:', `${targetCategory}-panel`);
-            }
+            const targetPanel = windowEl.querySelector(`#${targetCategory}-panel`);
+            if (targetPanel) targetPanel.classList.add('active');
+            else console.error('Panel no encontrado:', `${targetCategory}-panel`);
         });
     });
 }
 
-// Funcionalidad para Skills tipo Configuración Windows 11
 function setupSkillsNavigation() {
     const categories = document.querySelectorAll('.skills-category');
     const panels = document.querySelectorAll('.skills-panel');
 
-    console.log('Configurando navegación de Skills:', categories.length, 'categorías encontradas');
-
     categories.forEach(category => {
         category.addEventListener('click', () => {
             const targetCategory = category.getAttribute('data-category');
-            console.log('Categoría seleccionada:', targetCategory);
-            
-            // Remover clase active de todas las categorías
+
             categories.forEach(cat => cat.classList.remove('active'));
-            
-            // Agregar clase active a la categoría seleccionada
             category.classList.add('active');
-            
-            // Ocultar todos los paneles
+
             panels.forEach(panel => panel.classList.remove('active'));
-            
-            // Mostrar el panel correspondiente
             const targetPanel = document.getElementById(`${targetCategory}-panel`);
-            if (targetPanel) {
-                targetPanel.classList.add('active');
-                console.log('Panel activado:', targetPanel.id);
-            } else {
-                console.error('Panel no encontrado:', `${targetCategory}-panel`);
-            }
+            if (targetPanel) targetPanel.classList.add('active');
+            else console.error('Panel no encontrado:', `${targetCategory}-panel`);
         });
     });
-} 
+}
+
+// Listener delegado para formularios de contacto clonados
+document.addEventListener('submit', function(e) {
+  const form = e.target;
+  if (form && form.id === 'contactForm') {
+    handleContactSubmit(e);
+  }
+}, true);
