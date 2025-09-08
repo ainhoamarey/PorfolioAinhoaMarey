@@ -1478,9 +1478,27 @@ function setupMobileExperience() {
     setInterval(updateMobileTime, 1000);
 
     document.querySelectorAll('.mobile-app').forEach(app => {
-        app.addEventListener('dblclick', function() {
+        app.addEventListener('click', function() {
             const windowType = this.getAttribute('data-window');
-            openWindow(windowType);
+            const windowEl = openWindow(windowType);
+            // Maximize the window
+            if (windowEl) {
+                windowEl.classList.add('maximized');
+                windowEl.style.width = '100%';
+                windowEl.style.height = '100%';
+                windowEl.style.top = '0';
+                windowEl.style.left = '0';
+                windowEl.style.transform = 'none';
+                windowEl.style.borderRadius = '0';
+                windowEl.style.zIndex = '9999';
+                
+                // Update the maximize button state
+                const maxBtn = windowEl.querySelector('.maximize-btn');
+                if (maxBtn) {
+                    maxBtn.innerHTML = '<i class="fas fa-compress"></i>';
+                    maxBtn.setAttribute('data-maximized', 'true');
+                }
+            }
         });
     });
 
@@ -1581,35 +1599,73 @@ function showMobileNotification(title, message) {
 }
 
 function showMobileLanguageMenu() {
+    // Remove any existing language menu
+    const existingMenu = document.querySelector('.mobile-language-menu');
+    if (existingMenu) existingMenu.remove();
+
+    // Get translations for the current language
+    const currentLang = localStorage.getItem(LANG_KEY) || getInitialLang();
+    const translations = {
+        es: {
+            selectLanguage: 'Seleccionar idioma',
+            spanish: 'Español',
+            english: 'Inglés'
+        },
+        en: {
+            selectLanguage: 'Select Language',
+            spanish: 'Spanish',
+            english: 'English'
+        }
+    };
+
     const mobileLanguageMenu = document.createElement('div');
     mobileLanguageMenu.className = 'mobile-language-menu';
     mobileLanguageMenu.innerHTML = `
         <div class="mobile-language-header">
-            <h3>Seleccionar idioma</h3>
+            <h3>${translations[currentLang].selectLanguage}</h3>
             <button class="mobile-language-close">&times;</button>
         </div>
         <div class="mobile-language-options">
-            <button class="mobile-language-option" data-lang="es"><span>🇪🇸</span><span>Español</span></button>
-            <button class="mobile-language-option" data-lang="en"><span>🇺🇸</span><span>English</span></button>
+            <button class="mobile-language-option" data-lang="es">
+                <span class="flag">🇪🇸</span>
+                <span class="language-name">${translations[currentLang].spanish}</span>
+            </button>
+            <button class="mobile-language-option" data-lang="en">
+                <span class="flag">🇬🇧</span>
+                <span class="language-name">${translations[currentLang].english}</span>
+            </button>
         </div>
-    `;
-
-    mobileLanguageMenu.style.cssText = `
-        position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-        background: rgba(40, 40, 40, 0.95); backdrop-filter: blur(20px); border-radius: 15px;
-        padding: 20px; z-index: 2000; min-width: 250px; animation: fadeIn 0.3s ease;
     `;
 
     document.body.appendChild(mobileLanguageMenu);
 
-    mobileLanguageMenu.querySelector('.mobile-language-close').addEventListener('click', () => { mobileLanguageMenu.remove(); });
+    // Close button handler
+    mobileLanguageMenu.querySelector('.mobile-language-close').addEventListener('click', () => {
+        mobileLanguageMenu.classList.add('closing');
+        setTimeout(() => mobileLanguageMenu.remove(), 200);
+    });
+
+    // Language selection handler
     mobileLanguageMenu.querySelectorAll('.mobile-language-option').forEach(option => {
         option.addEventListener('click', function() {
             const lang = this.getAttribute('data-lang');
-            changeLanguage(lang);
-            mobileLanguageMenu.remove();
+            // Always change to the selected language when clicked
+            currentLanguage = lang;
+            localStorage.setItem(LANG_KEY, lang);
+            applyTranslations(lang);
+            
+            // Close the menu
+            mobileLanguageMenu.classList.add('closing');
+            setTimeout(() => {
+                if (mobileLanguageMenu.parentNode) {
+                    mobileLanguageMenu.remove();
+                }
+            }, 200);
         });
     });
+
+    // Show menu in current language without changing the page language
+    translateSubtree(mobileLanguageMenu, currentLanguage);
 }
 
 function detectMobile() {

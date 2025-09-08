@@ -1,33 +1,33 @@
 /* Variables CSS para temas */
 :root {
-    --bg-primary: #f0f0f0;
-    --bg-secondary: #ffffff;
-    --bg-tertiary: #e1e1e1;
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --bg-tertiary: #e9ecef;
     --text-primary: #000000;
-    --text-secondary: #666666;
+    --text-secondary: #495057;
     --accent-color: #0078d4;
-    --border-color: #d1d1d1;
+    --border-color: #dee2e6;
     --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    --window-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    --taskbar-bg: rgba(255, 255, 255, 0.95);
-    --taskbar-border: rgba(0, 0, 0, 0.1);
-    --mobile-bg: #000000;
-    --mobile-app-bg: rgba(255, 255, 255, 0.1);
-    --mobile-app-hover: rgba(255, 255, 255, 0.2);
+    --window-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    --taskbar-bg: rgba(248, 249, 250, 0.95);
+    --taskbar-border: rgba(0, 0, 0, 0.05);
+    --mobile-bg: #f8f9fa;
+    --mobile-app-bg: rgba(0, 120, 212, 0.1);
+    --mobile-app-hover: rgba(0, 120, 212, 0.2);
 }
 
 /* Tema oscuro */
 [data-theme="dark"] {
-    --bg-primary: #1e1e1e;
-    --bg-secondary: #2d2d2d;
-    --bg-tertiary: #3d3d3d;
+    --bg-primary: #000000;
+    --bg-secondary: #121212;
+    --bg-tertiary: #1e1e1e;
     --text-primary: #ffffff;
-    --text-secondary: #cccccc;
+    --text-secondary: #b3b3b3;
     --accent-color: #0078d4;
-    --border-color: #404040;
-    --shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-    --window-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-    --taskbar-bg: rgba(45, 45, 45, 0.95);
+    --border-color: #333333;
+    --shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    --window-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+    --taskbar-bg: rgba(0, 0, 0, 0.95);
     --taskbar-border: rgba(255, 255, 255, 0.1);
     --mobile-bg: #000000;
     --mobile-app-bg: rgba(255, 255, 255, 0.1);
@@ -1143,38 +1143,168 @@ body {
     -webkit-backdrop-filter: blur(20px);
 }
 
+/* Mobile Language Menu */
+.mobile-language-menu {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 12px;
+    padding: 20px;
+    z-index: 2000;
+    width: 85%;
+    max-width: 300px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.3s ease;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+[data-theme="dark"] .mobile-language-menu {
+    background: #2f2f2f;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.mobile-language-menu.closing {
+    animation: fadeOut 0.2s ease forwards;
+}
+
+.mobile-language-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobile-language-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #0078d4;
+    font-weight: 500;
+}
+
+.mobile-language-close {
+    background: none;
+    border: none;
+    color: #0078d4;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px 10px;
+    line-height: 1;
+    transition: color 0.2s ease;
+}
+
+.mobile-language-close:hover {
+    color: #005a9e;
+}
+
+.mobile-language-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.mobile-language-option {
+    display: flex;
+    align-items: center;
+    background: rgba(0, 120, 212, 0.05);
+    border: 1px solid rgba(0, 120, 212, 0.1);
+    border-radius: 8px;
+    padding: 12px 15px;
+    color: #0078d4;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    width: 100%;
+}
+
+.mobile-language-option .flag {
+    font-size: 1.2rem;
+    margin-right: 12px;
+    min-width: 24px;
+    text-align: center;
+}
+
+.mobile-language-option .language-name {
+    flex: 1;
+}
+
+.mobile-language-option:hover {
+    background: rgba(0, 120, 212, 0.1);
+    transform: translateY(-1px);
+}
+
+.mobile-language-option:active {
+    transform: translateY(0);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translate(-50%, -45%); }
+    to { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; transform: translate(-50%, -50%); }
+    to { opacity: 0; transform: translate(-50%, -45%); }
+}
+
 /* EXPERIENCIA MÓVIL */
 @media screen and (max-width: 768px) {
-    body {
-        background: url('../assets/images/fondoEnClaro.png') center center;
-        background-size: cover;
-        background-repeat: no-repeat;
+    body, html {
+        height: 100%;
+        margin: 0;
+        padding: 0;
         overflow: hidden;
+    }
+    
+    body {
+        background: url('../assets/images/fondoEnClaro.jpeg') no-repeat center center fixed;
+        background-size: cover;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-attachment: fixed;
     }
     
     /* Fondo oscuro para body en móvil */
     [data-theme="dark"] body {
-        background: url('../assets/images/fondoEnOscuro.png') center center;
+        background: url('../assets/images/fondoEnOscuro.jpeg') no-repeat center center fixed;
         background-size: cover;
-        background-repeat: no-repeat;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-attachment: fixed;
     }
 
     .desktop {
         height: 100vh;
-        background: url('../assets/images/fondoEnClaro.png') center center;
-        background-size: cover;
-        background-repeat: no-repeat;
+        background: transparent;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         padding: 0;
+        position: relative;
     }
     
-    /* Fondo oscuro para móvil en tema dark */
-    [data-theme="dark"] .desktop {
-        background: url('../assets/images/fondoEnOscuro.png') center center;
-        background-size: cover;
-        background-repeat: no-repeat;
+    /* Fondo para el contenido en móvil */
+    .desktop::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: inherit;
+        z-index: -1;
     }
 
     /* Ocultar elementos de escritorio en móvil */
@@ -1200,9 +1330,11 @@ body {
         justify-content: space-between;
         align-items: center;
         padding: 20px 20px 10px 20px;
-        color: white;
+        background: var(--bg-secondary);
+        color: var(--text-primary);
         position: relative;
         z-index: 100;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
 
     .mobile-time {
@@ -1214,13 +1346,13 @@ body {
     .mobile-time .time {
         font-size: 24px;
         font-weight: 600;
-        color: white;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        color: var(--text-primary);
+        text-shadow: none;
     }
 
     .mobile-time .date {
         font-size: 12px;
-        color: rgba(255, 255, 255, 0.8);
+        color: var(--text-secondary);
         margin-top: 2px;
     }
 
@@ -1277,15 +1409,15 @@ body {
         gap: 8px;
         padding: 15px;
         border-radius: 12px;
-        background: rgba(255, 255, 255, 0.1);
+        background: var(--mobile-app-bg);
         backdrop-filter: blur(20px);
         cursor: pointer;
         transition: all 0.3s ease;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid var(--border-color);
     }
 
     .mobile-app:hover {
-        background: rgba(255, 255, 255, 0.2);
+        background: var(--mobile-app-hover);
         transform: scale(1.05);
     }
 
@@ -1297,12 +1429,12 @@ body {
 
     .mobile-app i {
         font-size: 32px;
-        color: white;
+        color: var(--accent-color);
     }
 
     .mobile-app span {
         font-size: 12px;
-        color: white;
+        color: var(--text-primary);
         text-align: center;
         font-weight: 500;
     }
@@ -1324,19 +1456,19 @@ body {
         justify-content: center;
         cursor: pointer;
         transition: all 0.3s ease;
-        background: rgba(255, 255, 255, 0.1);
+        background: var(--mobile-app-bg);
         backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid var(--border-color);
     }
 
     .mobile-system-app:hover {
-        background: rgba(255, 255, 255, 0.2);
+        background: var(--mobile-app-hover);
         transform: scale(1.1);
     }
 
     .mobile-system-app i {
         font-size: 24px;
-        color: white;
+        color: var(--accent-color);
     }
 
     .mobile-system-app.messages i {
@@ -1357,9 +1489,11 @@ body {
         bottom: 0;
         left: 0;
         right: 0;
-        background: rgba(40, 40, 40, 0.95);
+        background: var(--bg-secondary);
         backdrop-filter: blur(20px);
         border-radius: 20px 20px 0 0;
+        border-top: 1px solid var(--border-color);
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
         transform: translateY(calc(100% - 30px));
         transition: transform 0.3s ease;
         z-index: 1000;
@@ -1408,16 +1542,17 @@ body {
         gap: 8px;
         padding: 15px;
         border: none;
-        background: rgba(255, 255, 255, 0.1);
+        background: var(--mobile-app-bg);
         border-radius: 12px;
-        color: white;
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
         cursor: pointer;
         transition: all 0.3s ease;
         min-width: 80px;
     }
 
     .mobile-control-btn:hover {
-        background: rgba(255, 255, 255, 0.2);
+        background: var(--mobile-app-hover);
         transform: scale(1.05);
     }
 
