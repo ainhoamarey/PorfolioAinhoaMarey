@@ -1,7 +1,4 @@
-// =============================
 // CONFIGURACIÓN FORMULARIO
-// =============================
-// ⚠️ Endpoint real de Formspree:
 const FORM_ENDPOINT = "https://formspree.io/f/mzzayovn";
 
 // Mensajes UI para el botón de enviar
@@ -10,15 +7,10 @@ const UI_TEXT = {
   en: { sending: "Sending...", sent_ok: "Message sent! I'll reply soon.", sent_err: "Message could not be sent.", check_fields: "Please check the highlighted fields.", net_err: "Network error. Try again." }
 };
 
-// =============================
 // VARIABLES GLOBALES
-// =============================
 let activeWindows = [];
 let windowCounter = 0;
 let isDarkTheme = false;
-
-const LANG_KEY = "portfolio_lang";
-let currentLanguage = localStorage.getItem(LANG_KEY) || (navigator.language && navigator.language.toLowerCase().startsWith("es") ? "es" : "en");
 
 let isMaximized = false;
 let currentTheme = localStorage.getItem('theme') || 'light';
@@ -84,76 +76,327 @@ if (mobileWindowsBtn && mobileStartMenu) {
 }
 
 // Traducciones
+
+const LANG_KEY = "portfolio_lang";
+
 const translations = {
   es: {
+    // Básicos / navegación
     projects: "Proyectos",
     cv: "CV",
     about: "Sobre mí",
     skills: "Habilidades",
     contact: "Contacto",
+    languageLabel: "Idioma",
+    themeLabel: "Tema",
     portfolioTitle: "Portafolio de Ainhoa",
     portfolioSubtitle: "Tu sistema operativo personal",
     startMenuSearch: "Buscar en el portafolio...",
     searchPlaceholder: "Buscar apps o archivos...",
+    userName: "Ainhoa",
+    spanish: "Español",
+    english: "English",
+
+    // Proyectos
+    frontend: "Frontend",
+    backend: "Backend",
+    codeLabel: "Código",
+    demoLabel: "Demo",
+    tech_html: "HTML",
+    tech_css: "CSS",
+    tech_css3: "CSS3",
+    tech_js: "JavaScript",
+    tech_php: "PHP",
+    tech_vue: "Vue",
+    tech_vite: "Vite",
+    tech_chartjs: "Chart.js",
+    proj1_title: "Portafolio Web",
+    proj2_title: "ONA",
+    proj3_title: "Centro de estetica",
+    proj4_title: "Adelia",
+    proj5_title: "Tomas Claret",
+    proj6_title: "Canciones de queen",
+
+    proj1_desc: "Portafolio personal con diseño tipo escritorio Windows",
+    proj2_desc: "Tienda online con carrito de compras y gestión de productos",
+    proj3_desc: "Página de centro de estética con galería de fotos",
+    proj4_desc: "Panel administrativo responsive con tablas y gráficos",
+    proj5_desc: "Diferentes páginas con paleta de color, barra deslizante y botones",
+    proj6_desc: "Página con menú e iconos",
+    proj7_desc: "Página web con canciones de Queen",
+
+    // CV
+    downloadPdf: "Descargar PDF",
+    openNewTab: "Abrir en nueva pestaña",
+    nameTitle: "Ainhoa Marey",
+    cvSubtitle: "Desarrolladora multiplataforma y diseño web",
+    experienceTitle: "Experiencia",
+    exp1_desc: "Dinamización de actividades lúdicas y educativas con menores.",
+    exp2_desc: "Organización de talleres y juegos en eventos municipales.",
+    exp3_desc: "Atención y acompañamiento pedagógico a niños de primera infancia.",
+    exp4_desc: "Elaboración de productos artesanales y atención al cliente.",
+    exp5_place: "Cuidado de niños entre 5 y 13 años",
+    exp5_desc: "Supervisión de deberes, meriendas y actividades recreativas.",
+    exp6_desc: "Apoyo en lavado, coloración y atención al cliente.",
+    exp7_desc: "Clasificación y reparto de alimentos a personas necesitadas.",
+    cvNote: "Haz clic en \"Descargar PDF\" para ver el currículum completo",
+    backToPreview: "Volver a vista previa",
+    exp1_title: "Monitora de ocio y tiempo libre",
+    exp1_place: "Funny & Fanny, Collado Villalba",
+    exp2_title: "Monitora de ocio y tiempo libre",
+    exp2_place: "Ayuntamiento de Las Rozas, Las Rozas",
+    exp3_title: "Educadora infantil",
+    exp3_place: "Escuela Adivinanza, Alcorcón",
+    exp4_title: "Artesanía y gestión de ventas",
+    exp4_place: "Ona Shop",
+    exp5_title: "Cuidadora de niños",
+    exp6_title: "Auxiliar de peluquería",
+    exp6_place: "Peluquería Ankos, Collado Villalba",
+    exp7_title: "Banco de Alimentos de Madrid",
+    exp7_place: "Supermercado BM, Guadarrama",
+
+    // About / Timeline
+    aboutName: "Ainhoa Marey",
+    aboutTagline: "Desarrolladora multiplataforma con ganas de transformar ideas en experiencias digitales únicas",
+    aboutParagraph:
+      "Soy una desarrolladora en formación con una base sólida en el desarrollo de aplicaciones multiplataforma y una gran motivación por seguir creciendo en el mundo de la tecnología. Me considero una persona creativa, resolutiva y con gran capacidad de adaptación, cualidades que he potenciado en experiencias laborales previas donde la comunicación, el trabajo en equipo y la organización fueron clave. Actualmente me estoy especializando en el diseño y desarrollo de aplicaciones eficientes y funcionales, con interés en seguir aprendiendo sobre nuevas tecnologías y metodologías ágiles. Me entusiasma trabajar en proyectos que representen un reto y me permitan aportar soluciones útiles e innovadoras.",
+    timelineTitle: "Mi Línea del tiempo",
+    tl1_desc: "Aprendiendo Java, bases de datos, diseño de interfaces, desarrollo web y más.",
+    tl2_desc: "Coordinación de actividades, liderazgo, comunicación y trabajo en equipo.",
+    tl3_desc: "Desarrollo de habilidades sociales y organizativas. Trabajo colaborativo.",
+    tl4_desc: "Formación en desarrollo infantil, planificación educativa y comunicación.",
+    tl5_desc: "Formación complementaria clave en liderazgo juvenil.",
+    tl6_desc: "Portfolio personal, pequeños desarrollos web y apps educativas.",
+    tl1_title: "Grado Superior en Desarrollo de Aplicaciones Multiplataforma (DAM)",
+    tl2_title: "Monitora de Ocio y Tiempo Libre",
+    tl2_place: "Ayuntamiento de Las Rozas / Funny & Fanny",
+    tl3_title: "Educadora Infantil",
+    tl3_place: "Escuela Adivinanza, Alcorcón",
+    tl4_title: "Grado Superior Dual en Educación Infantil",
+    tl4_place: "IFP María de Zallas y Sotomayor, Majadahonda",
+    tl5_title: "Título de Monitor de Juventud y Tiempo Libre",
+    tl5_place: "Ayuntamiento de Moralzarzal",
+    tl6_title: "Primeros proyectos como desarrolladora",
+
+    // Skills
+    designCat: "Diseño",
+    ideCat: "IDE y herramientas",
+    frameworksCat: "Frameworks",
+    languagesCat: "Lenguajes",
+    designTitle: "Diseño",
+    designDesc: "Herramientas de diseño UI/UX y desarrollo visual",
+    ideTitle: "IDE y herramientas",
+    ideDesc: "Entornos de desarrollo integrado y herramientas de programación",
+    eclipseDesc: "IDE enfocado en Java",
+    netbeansDesc: "IDE de desarrollo para Java",
+    androidStudioDesc: "IDE oficial para desarrollo Android",
+    visualStudioDesc: "IDE completo para .NET y C#",
+    frameworksTitle: "Frameworks",
+    frameworksDesc: "Frameworks y librerías de desarrollo",
+    springDesc: "Framework modular para desarrollo Java",
+    springBootDesc: "Extensión de Spring para configuraciones rápidas",
+    languagesTitle: "Lenguajes",
+    languagesDesc: "Lenguajes de programación y marcado",
+    javaDesc: "Lenguaje orientado a objetos, multiplataforma",
+    htmlDesc: "Lenguaje de marcado para páginas web",
+    cssDesc: "Lenguaje de estilos para diseño web",
+    javascriptDesc: "Lenguaje de scripting para frontend y backend",
+
+    // Contacto / formulario
     contactTitle: "Contáctame",
     namePlaceholder: "Nombre",
-    emailPlaceholder: "Correo electrónico",
+    emailPlaceholder: "Correo Electrónico",
     messagePlaceholder: "Mensaje",
-    sendButton: "Enviar"
+    sendButton: "Enviar",
+    linkedin: "LINKEDIN",
+    github: "GITHUB",
+    emailLabel: "EMAIL",
+
+    // Estados del formulario
+    check_fields: "Por favor, revisa los campos marcados.",
+    sending: "Enviando...",
+    sent_ok: "¡Mensaje enviado! Me pondré en contacto contigo pronto.",
+    sent_error: "No se pudo enviar el mensaje. Inténtalo de nuevo."
   },
+
   en: {
+    // Basics / nav
     projects: "Projects",
     cv: "CV",
     about: "About me",
     skills: "Skills",
     contact: "Contact",
+    languageLabel: "Language",
+    themeLabel: "Theme",
     portfolioTitle: "Ainhoa's Portfolio",
     portfolioSubtitle: "Your personal operating system",
     startMenuSearch: "Search the portfolio...",
     searchPlaceholder: "Search apps or files...",
+    userName: "Ainhoa",
+    spanish: "Spanish",
+    english: "English",
+
+    // Projects
+    frontend: "Frontend",
+    backend: "Backend",
+    codeLabel: "Code",
+    demoLabel: "Demo",
+    tech_html: "HTML",
+    tech_css: "CSS",
+    tech_css3: "CSS3",
+    tech_js: "JavaScript",
+    tech_php: "PHP",
+    tech_vue: "Vue",
+    tech_vite: "Vite",
+    tech_chartjs: "Chart.js",
+
+    proj1_title: "Web Portfolio",
+    proj2_title: "ONA",
+    proj3_title: "Beauty Center",
+    proj4_title: "Admin Dashboard",
+    proj5_title: "Adelia",
+    proj6_title: "Tomas Claret",
+    proj7_title: "Queen Songs",
+
+    proj1_desc: "Personal portfolio with a Windows-like desktop UI",
+    proj2_desc: "Online store with shopping cart and product management",
+    proj3_desc: "Beauty center website with a photo gallery",
+    proj4_desc: "Responsive admin panel with tables and charts",
+    proj5_desc: "Multiple pages with color palette, slider and buttons",
+    proj6_desc: "Page with menu and icons",
+    proj7_desc: "Web page featuring Queen songs",
+
+    // CV
+    downloadPdf: "Download PDF",
+    openNewTab: "Open in new tab",
+    nameTitle: "Ainhoa Marey",
+    cvSubtitle: "Multiplatform developer and web design",
+    experienceTitle: "Experience",
+    exp1_desc: "Facilitation of recreational and educational activities with minors.",
+    exp2_desc: "Organization of workshops and games at municipal events.",
+    exp3_desc: "Care and educational support for early childhood.",
+    exp4_desc: "Creation of handcrafted products and customer service.",
+    exp5_place: "Childcare for ages 5 to 13",
+    exp5_desc: "Supervision of homework, snacks and leisure activities.",
+    exp6_desc: "Support with washing, coloring and customer care.",
+    exp7_desc: "Sorting and distribution of food to people in need.",
+    cvNote: "Click “Download PDF” to see the full résumé",
+    backToPreview: "Back to preview",
+
+    exp1_title: "Leisure and Free Time Instructor",
+    exp1_place: "Funny & Fanny, Collado Villalba",
+    exp2_title: "Leisure and Free Time Instructor",
+    exp2_place: "Las Rozas City Council, Las Rozas",
+    exp3_title: "Early Childhood Educator",
+    exp3_place: "Adivinanza School, Alcorcón",
+    exp4_title: "Handcrafts and Sales Management",
+    exp4_place: "Ona Shop",
+    exp5_title: "Childcare Provider",
+    exp6_title: "Hairdressing Assistant",
+    exp6_place: "Ankos Hair Salon, Collado Villalba",
+    exp7_title: "Madrid Food Bank",
+    exp7_place: "BM Supermarket, Guadarrama",
+
+    // About / Timeline
+    aboutName: "Ainhoa Marey",
+    aboutTagline: "Multiplatform developer eager to turn ideas into unique digital experiences",
+    aboutParagraph:
+      "I'm a trainee developer with a solid foundation in cross-platform app development and a strong motivation to keep growing in tech. I'm creative, resourceful and adaptable—skills strengthened by past roles where communication, teamwork and organization were key. I'm currently focusing on designing and building efficient, functional apps, and I love projects that are challenging and useful.",
+    timelineTitle: "My Timeline",
+    tl1_desc: "Learning Java, databases, UI design, web development and more.",
+    tl2_desc: "Coordination of activities, leadership, communication and teamwork.",
+    tl3_desc: "Development of social and organizational skills. Collaborative work.",
+    tl4_desc: "Training in child development, educational planning and communication.",
+    tl5_desc: "Complementary training focused on youth leadership.",
+    tl6_desc: "Personal portfolio, small web builds and educational apps.",
+    tl1_title: "Higher Vocational Training in Cross-Platform App Development (DAM)",
+    tl2_title: "Leisure and Free Time Instructor",
+    tl2_place: "Las Rozas City Council / Funny & Fanny",
+    tl3_title: "Early Childhood Educator",
+    tl3_place: "Adivinanza School, Alcorcón",
+    tl4_title: "Dual Higher Vocational Training in Early Childhood Education",
+    tl4_place: "IFP María de Zallas y Sotomayor, Majadahonda",
+    tl5_title: "Youth and Leisure Leader Certificate",
+    tl5_place: "Moralzarzal City Council",
+    tl6_title: "First projects as a developer",
+
+    // Skills
+    designCat: "Design",
+    ideCat: "IDE & tools",
+    frameworksCat: "Frameworks",
+    languagesCat: "Languages",
+    designTitle: "Design",
+    designDesc: "UI/UX design tools and visual development",
+    ideTitle: "IDE & tools",
+    ideDesc: "Integrated development environments and programming tools",
+    eclipseDesc: "Java-focused IDE",
+    netbeansDesc: "Development IDE for Java",
+    androidStudioDesc: "Official IDE for Android development",
+    visualStudioDesc: "Full IDE for .NET and C#",
+    frameworksTitle: "Frameworks",
+    frameworksDesc: "Development frameworks and libraries",
+    springDesc: "Modular framework for Java development",
+    springBootDesc: "Spring extension for fast configuration",
+    languagesTitle: "Languages",
+    languagesDesc: "Programming and markup languages",
+    javaDesc: "Object-oriented, cross-platform language",
+    htmlDesc: "Markup language for web pages",
+    cssDesc: "Stylesheet language for web design",
+    javascriptDesc: "Scripting language for frontend and backend",
+
+    // Contact / form
     contactTitle: "Contact me",
     namePlaceholder: "Name",
     emailPlaceholder: "Email",
     messagePlaceholder: "Message",
-    sendButton: "Send"
+    sendButton: "Send",
+    linkedin: "LINKEDIN",
+    github: "GITHUB",
+    emailLabel: "EMAIL",
+
+    // Form status
+    check_fields: "Please check the highlighted fields.",
+    sending: "Sending...",
+    sent_ok: "Message sent! I'll get back to you soon.",
+    sent_error: "Couldn't send the message. Please try again."
   }
 };
 
-// Idioma inicial
+// Helpers de idioma
 function getInitialLang() {
   const saved = localStorage.getItem(LANG_KEY);
   if (saved) return saved;
   return navigator.language && navigator.language.toLowerCase().startsWith("es") ? "es" : "en";
 }
+let currentLanguage = localStorage.getItem(LANG_KEY) || getInitialLang();
 
-function applyTranslations(lang) {
-  // Textos
-  document.querySelectorAll("[data-translate]").forEach(el => {
+function translateSubtree(root, lang = currentLanguage) {
+  root.querySelectorAll("[data-translate]").forEach(el => {
     const key = el.getAttribute("data-translate");
     const txt = translations[lang]?.[key];
     if (typeof txt === "string") el.textContent = txt;
   });
-
-  // Placeholders
-  document.querySelectorAll("[data-translate-placeholder]").forEach(el => {
+  root.querySelectorAll("[data-translate-placeholder]").forEach(el => {
     const key = el.getAttribute("data-translate-placeholder");
     const txt = translations[lang]?.[key];
     if (typeof txt === "string") el.setAttribute("placeholder", txt);
   });
-
-  // Otros atributos
-  document.querySelectorAll("[data-translate-title]").forEach(el => {
+  root.querySelectorAll("[data-translate-title]").forEach(el => {
     const key = el.getAttribute("data-translate-title");
     const txt = translations[lang]?.[key];
     if (typeof txt === "string") el.setAttribute("title", txt);
   });
-  document.querySelectorAll("[data-translate-aria]").forEach(el => {
+  root.querySelectorAll("[data-translate-aria]").forEach(el => {
     const key = el.getAttribute("data-translate-aria");
     const txt = translations[lang]?.[key];
     if (typeof txt === "string") el.setAttribute("aria-label", txt);
   });
+}
 
-  // Indicadores
+function applyTranslations(lang) {
+  translateSubtree(document, lang);
+
+  // Botones de idioma
   const langBtn = document.getElementById("languageToggle");
   if (langBtn) {
     const span = langBtn.querySelector("span");
@@ -164,6 +407,25 @@ function applyTranslations(lang) {
     const span = mobileLangBtn.querySelector("span");
     if (span) span.textContent = lang === "es" ? "Idioma" : "Language";
   }
+
+  // Placeholders de búsqueda / títulos de menú inicio
+  const searchInput = document.getElementById("searchInput");
+  if (searchInput) searchInput.placeholder = translations[lang]?.searchPlaceholder || "";
+  const startMenuSearch = document.querySelector(".start-menu-search input");
+  if (startMenuSearch) startMenuSearch.placeholder = translations[lang]?.startMenuSearch || "";
+  const startMenuTitle = document.querySelector(".start-menu-header h3");
+  if (startMenuTitle) startMenuTitle.textContent = translations[lang]?.portfolioTitle || "";
+  const startMenuSubtitle = document.querySelector(".start-menu-header p");
+  if (startMenuSubtitle) startMenuSubtitle.textContent = translations[lang]?.portfolioSubtitle || "";
+
+  // Barra de tareas
+  document.querySelectorAll(".taskbar-app").forEach(button => {
+    const type = button.getAttribute("data-window-type");
+    const key = type === "cv" ? "cv" : type;
+    const span = button.querySelector("span");
+    if (span && translations[lang]?.[key]) span.textContent = translations[lang][key];
+  });
+
   document.documentElement.setAttribute("lang", lang);
 }
 
@@ -171,39 +433,37 @@ function setLang(lang) {
   currentLanguage = lang;
   localStorage.setItem(LANG_KEY, lang);
   applyTranslations(lang);
-  // Forzar actualización de textos dependientes
-  changeLanguage(lang);
+  document.dispatchEvent(new Event("languageChanged"));
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  applyTranslations(getInitialLang());
+  applyTranslations(currentLanguage);
 
   const toggle = document.getElementById("languageToggle");
   if (toggle) {
     toggle.addEventListener("click", () => {
-      const current = localStorage.getItem(LANG_KEY) || getInitialLang();
-      setLang(current === "es" ? "en" : "es");
+      setLang(currentLanguage === "es" ? "en" : "es");
     });
   }
-
-  const languageMenu = document.getElementById("languageMenu");
-  if (languageMenu) {
-    languageMenu.addEventListener("click", (e) => {
-      const option = e.target.closest(".language-option");
-      if (!option) return;
-      const newLang = option.dataset.lang;
-      if (newLang === "es" || newLang === "en") setLang(newLang);
-    });
-  }
-
   const mobileLanguageBtn = document.getElementById("mobileLanguageBtn");
   if (mobileLanguageBtn) {
     mobileLanguageBtn.addEventListener("click", () => {
-      const current = localStorage.getItem(LANG_KEY) || getInitialLang();
-      setLang(current === "es" ? "en" : "es");
+      setLang(currentLanguage === "es" ? "en" : "es");
     });
   }
 });
+
+// Traducir nodos añadidos dinámicamente (ventanas clonadas, etc.)
+const translateObserver = new MutationObserver(muts => {
+  muts.forEach(m => {
+    m.addedNodes.forEach(n => {
+      if (n.nodeType === 1) translateSubtree(n, currentLanguage);
+    });
+  });
+});
+translateObserver.observe(document.body, { childList: true, subtree: true });
+
+
 
 // Inicializar la aplicación cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
@@ -212,7 +472,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const savedLanguage = localStorage.getItem(LANG_KEY) || getInitialLang();
     setTimeout(() => {
-        changeLanguage(savedLanguage);
+        setLang(savedLanguage);
     }, 100);
 
     updateTime();
