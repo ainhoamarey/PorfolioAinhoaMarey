@@ -188,6 +188,34 @@ body {
     justify-content: center;
     transition: background 0.2s ease;
 }
+/* Pantalla completa en móvil / cuando .fullscreen está activo */
+.window.fullscreen{
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    margin: 0 !important;
+    max-width: none !important;
+    max-height: none !important;
+    border-radius: 0 !important;
+    transform: none !important;
+    z-index: 9999 !important; /* por encima de la taskbar y apps móviles */
+  }
+  
+  /* Que el contenido aproveche toda la altura menos la cabecera */
+  .window.fullscreen .window-content{
+    height: calc(100vh - 48px); /* ajusta 48px si tu header es más alto/bajo */
+    overflow: auto;
+  }
+  
+  /* Ocultar el tirador de redimensionado en fullscreen */
+  .window.fullscreen .resize-handle{
+    display: none !important;
+  }
+  
 
 .minimize-btn:hover {
     background: #ffc107;
