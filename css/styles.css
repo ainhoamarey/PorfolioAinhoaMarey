@@ -215,6 +215,10 @@ body {
   .window.fullscreen .resize-handle{
     display: none !important;
   }
+  .window.fullscreen .window-controls .minimize-btn,
+  .window.fullscreen .window-controls .maximize-btn {
+    display: none !important;
+  }
   
 
 .minimize-btn:hover {
